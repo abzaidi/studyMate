@@ -1,41 +1,46 @@
-import cv2
-import pytesseract
+# main.py
 
-# Specify the path to the Tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r'G:\Tesseract OCR\tesseract.exe'  # Adjust the path as needed
+import os
+from pdf_to_images import convert_pdf_to_images, image_to_byte_array
+from text_extraction import extract_text_from_image
+from dotenv import load_dotenv
 
-def preprocess_image(image_path):
-    # Read the image using OpenCV
-    image = cv2.imread(image_path)
+# Load environment variables from .env file
+load_dotenv()
 
-    # Convert the image to grayscale
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+google_credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
-    # Apply thresholding to binarize the image
-    _, thresh_image = cv2.threshold(gray_image, 128, 255, cv2.THRESH_BINARY)
+if google_credentials_path is None:
+    raise ValueError("The environment variable 'GOOGLE_APPLICATION_CREDENTIALS' is not set.")
 
-    # Optionally, apply noise removal techniques
-    processed_image = cv2.medianBlur(thresh_image, 3)
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = google_credentials_path
 
-    return processed_image
+def process_pdf(pdf_path, output_text_file):
+    # Convert PDF to images
+    images = convert_pdf_to_images(pdf_path)
 
-def extract_text_from_image(image_path):
-    # Preprocess the image
-    processed_image = preprocess_image(image_path)
+    all_text = ""
 
-    # Perform OCR on the processed image
-    extracted_text = pytesseract.image_to_string(processed_image, lang='eng', config='--psm 6')
+    for i, image in enumerate(images):
+        # Convert image to byte array
+        img_byte_arr = image_to_byte_array(image)
 
-    return extracted_text
+        # Extract text from image
+        text = extract_text_from_image(img_byte_arr)
+        all_text += f"Page {i + 1}:\n{text}\n\n"
 
-# Path to the handwritten note image
-image_path = 'notes.jpg'
+    # Save all the extracted text to a single file
+    with open(output_text_file, 'w', encoding="UTF-8") as file:
+        file.write(all_text)
 
-# Extract text from the image
-text = extract_text_from_image(image_path)
+    print(f"Text extracted and saved to {output_text_file}")
 
-# Print the extracted text
-with open('extracted_text.txt', 'w') as file:
-    file.write(text)
+if __name__ == "__main__":
+    # Path to the PDF document
+    pdf_path = 'pp.pdf'
 
-print("Text extracted and saved to extracted_text.txt")
+    # Path to save the extracted text
+    output_text_file = 'extracted_text.txt'
+
+    # Process the PDF and extract text
+    process_pdf(pdf_path, output_text_file)
