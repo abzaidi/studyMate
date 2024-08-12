@@ -3,6 +3,7 @@
 import os
 from pdf_to_images import convert_pdf_to_images, image_to_byte_array
 from text_extraction import extract_text_from_image
+from text_cleaning import correct_spelling, normalize_text
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -27,7 +28,14 @@ def process_pdf(pdf_path, output_text_file):
 
         # Extract text from image
         text = extract_text_from_image(img_byte_arr)
+
+        # Clean the extracted text
+        text = normalize_text(text)
+        text = correct_spelling(text)
+        # text = correct_grammar_and_context(text)
+
         all_text += f"Page {i + 1}:\n{text}\n\n"
+
 
     # Save all the extracted text to a single file
     with open(output_text_file, 'w', encoding="UTF-8") as file:
