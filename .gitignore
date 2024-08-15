@@ -12,3 +12,5 @@ __pycache__/
 my-project-64178-1701002322524-e28de5eac8cc.json
 
 
+# ignore .env file
+.env
