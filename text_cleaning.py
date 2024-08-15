@@ -1,26 +1,33 @@
-# from transformers import pipeline
 import re
-from textblob import TextBlob
+import os
+from dotenv import load_dotenv, find_dotenv
+from together import Together
+
+_ = load_dotenv(find_dotenv())
 
 
-def correct_spelling(text):
-    blob = TextBlob(text)
-    corrected_text = str(blob.correct())
-    return corrected_text
+client = Together(api_key=os.environ.get('TOGETHER_API_KEY'))
 
-# def correct_spelling(text):
-#     # Use the T5 model for correcting spelling and grammar
-#     corrector = pipeline("text2text-generation", model="t5-base")
-#     prompt = f"Correct spelling: {text}"
-#     corrected = corrector(prompt, max_length=512)
-#     return corrected[0]['generated_text']
 
-# def correct_grammar_and_context(text):
-#     # Use the T5 model for correcting grammar and context
-#     corrector = pipeline("text2text-generation", model="t5-base")
-#     prompt = f"Correct grammar and context: {text}"
-#     corrected = corrector(prompt, max_length=512)
-#     return corrected[0]['generated_text']
+def correct_grammar_and_context(text):
+
+    response = client.chat.completions.create(
+        model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+        messages=[
+            {
+                    "role": "user",
+                    "content": f"correct and enhance the following the text:\n\n{text}"
+            },
+        ],
+        max_tokens=1000,
+        temperature=0.7,
+        top_p=0.7,
+        top_k=50,
+        repetition_penalty=1,
+        stop=["<|eot_id|>","<|eom_id|>"],
+        stream=False
+    )
+    return response.choices[0].message.content
 
 
 def normalize_text(text):

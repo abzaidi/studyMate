@@ -3,12 +3,12 @@
 import os
 from pdf_to_images import convert_pdf_to_images, image_to_byte_array
 from text_extraction import extract_text_from_image
-from text_cleaning import correct_spelling, normalize_text
-from dotenv import load_dotenv
+from text_cleaning import correct_grammar_and_context
+from dotenv import load_dotenv, find_dotenv
 from PIL import Image
 
 # Load environment variables from .env file
-load_dotenv()
+_ = load_dotenv(find_dotenv())
 
 google_credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
@@ -38,9 +38,10 @@ def process_file(file_path, output_text_file):
         text = extract_text_from_image(img_byte_arr)
 
         # Clean the extracted text
-        text = normalize_text(text)
-        text = correct_spelling(text)
-        # text = correct_grammar_and_context(text)
+        # text = normalize_text(text)
+        # text = correct_spelling(text)
+        text = correct_grammar_and_context(text)
+
 
         all_text += f"Page {i + 1}:\n{text}\n\n"
 
@@ -52,7 +53,7 @@ def process_file(file_path, output_text_file):
 
 if __name__ == "__main__":
     # Path to the file (PDF or image)
-    file_path = 'comp.jpg'
+    file_path = 'comp.pdf'
 
     # Path to save the extracted text
     output_text_file = 'extracted_text.txt'
