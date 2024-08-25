@@ -53,7 +53,7 @@ def process_file(file_path, output_text_file):
 
 if __name__ == "__main__":
     # Path to the file (PDF or image)
-    file_path = 'comp.pdf'
+    file_path = 'comp.jpg'
 
     # Path to save the extracted text
     output_text_file = 'extracted_text.txt'
