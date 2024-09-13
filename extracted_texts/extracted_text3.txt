@@ -1,0 +1,1945 @@
+Urban
+Edge
+Python Programming Notes by Harry
+
+What is Programming?
+------------------------
+
+Just like we use Hindi or English to communicate with each other, we use a programming language like Python to communicate with the computer.
+
+Programming is a way to instruct the computer to perform various tasks.
+
+What is Python?
+----------------
+
+Python is a simple and easy-to-understand language that feels like reading simple English. This pseudo-code nature of Python makes it easy to learn and understandable by beginners.
+
+Features of Python
+-------------------
+
+1. Easy to understand: Less development time
+2. Free and open-source
+3. High-level language
+4. Portable: Works on Linux, Windows, and Mac
+5. Fun to work with
+
+Installation
+------------
+
+Python can be easily installed from python.org. When you click on the download button, Python can be installed right after you complete the setup by executing the file for your platform. Just install it like a game!
+
+URBAN EDGE
+Chapter 1: Modules, Comments & pip
+
+Let's write our very first Python program.
+Create a file called hello.py and paste the
+below code in it:
+print("Hello World")
+# → print is a function (More later)
+Execute this file (by running) by typing python hello.py
+and you will see "Hello World."
+
+Modules
+----------------
+
+A module is a file containing code written
+by somebody else (usually) which can be
+imported and used in our programs.
+
+Pip
+----------------
+
+Pip is the package manager for Python.
+You can use pip to install a module
+on your system.
+
+Types of modules
+-----------------
+
+There are two types of modules in Python:
+1. Built-in modules
+2. External modules
+
+Some examples:
+
+### Built-in modules
+- Pre-installed in Python
+  → No need to install using pip.
+  Some examples of built-in modules are as, abc, etc.
+
+### External modules
+- Need to install using pip.
+  Some examples of external modules are:
+  - tensorflow
+  - flask
+
+Urban Edge
+Using Python as a Calculator
+We can use Python as a calculator by typing "python" + "j" on the terminal
+We
+Comments
+++ on the terminal
+
+This opens a REPL, or Read Evaluate Print Loop
+
+Comments are used to write something that the programmer does not want to execute.
+They can be used to mark author name, date, etc.
+
+There are two types of comments in Python:
+Types of Comments
+1. Single Line Comments
+Single line comments are written using the "#" symbol.
+
+2. Multi Line Comments
+Multi line comments are written using triple quotes: """ or ''' 
+
+Note: Python does not have a specific syntax for multi-line comments, but it is common practice to use triple quotes to denote a block of comments.
+
+Chapter 1: Practice Set
+URBAN EDG
+
+1. Write a program to print the "Twinkle, Twinkle, Little Star" poem in Python.
+2
+211
+Use the REPL and print the table of 5 using it.
+3. Install an external module and use it to perform an operation of your interest.
+4. Write a Python program to print the contents of a directory using the os module. Search online for the function which does that.
+5. Label the program written in Problem 4 with comments.
+
+URBAN EDGE
+Chapter 2 - Variables and Data Types
+
+A variable is the name given to a memory location in a program. For example:
+a = 30
+b = "Harry"
+c = 71.22
+
+→ Variables are containers that store a value.
+Keywords: Reserved words in Python
+Identifiers: class, function, variable
+Data Types: 
+
+Primarily, there are the following data types in Python:
+1. Integers
+2. Floating point numbers
+3. Strings
+4. Booleans
+5. None
+
+→ Python is a fantastic language that automatically identifies the type of data for us.
+a = 71
+b = 88.44
+name = "Harry"
+
+⇒ Identifies 'a' as an integer (int).
+⇒ Identifies 'b' as a floating-point number (float).
+⇒ Identifies 'name' as a string (str).
+
+Rules for defining a variable name (also applies to other identifiers):
+1. A variable name can contain alphabets, digits, and underscores.
+2. A variable name can only start with an alphabet or an underscore.
+3. A variable name cannot start with a digit.
+4. No whitespace is allowed to be used inside a variable name.
+
+27
+Urban Edge
+Examples of variable names are:
+harry, one_8, seven, seven etc.
+Operators in Python
+Python has the following common operators:
+1. Arithmetic operators: +, -, *, /, etc.
+2. Assignment operators: =, +=, -=, *=, /=, etc.
+3. Comparison operators: ==, !=, >, <, >=, <=, etc.
+4. Logical operators: and, or, not
+
+Type() function and Typecasting
+The type() function is used to find the data type of a given variable in Python.
+a = 31
+type(a)
+b = "31"
+type(b)
+# Output: <class 'int'>
+# Output: <class 'str'>
+
+A number can be converted into a string and vice versa (if possible).
+There are many functions to convert one data type into another.
+For example:
+str(31) => "31"
+int("32") => 32
+float("32") => 32.0
+
+Integer to String Conversion
+String to Integer Conversion
+Integer to Float Conversion
+
+Note: "31" is a string literal and 31 is a numeric literal.
+
+URBAN EDGE
+
+**Input() Function**
+
+The input() function allows the user to take input from the keyboard as a string.
+
+```python
+a = input("Enter name: ")
+```
+
+**Example**
+
+If the user entered "Harry", then:
+
+```python
+a = "Harry"
+```
+
+**Important Note**
+
+It is essential to note that the output of the input() function is always a string, even if a number is entered. For instance, if the user entered "34", the output would still be a string:
+
+```python
+a = "34"
+```
+
+**Variable a**
+
+In this case, the variable `a` would hold the string value "34", not the integer value 34.
+
+Chapter 2 - Practice Set
+URBAN
+EDG
+
+1. Write a Python program to add two numbers.
+2. Write a Python program to find the remainder when a number is divided by 2.
+
+3. Check the type of variable assigned using the input() function.
+4. Use comparison operators to find out whether a given variable 'a' is greater than 'b' or not.
+   Take a = 34 and b = 80.
+
+   Use the following Python code:
+   ```python
+if a > b:
+    print("a is greater than b")
+else:
+    print("a is not greater than b")
+```
+
+5. Write a Python program to find the average of two numbers entered by the user.
+   ```python
+num1 = float(input("Enter the first number: "))
+num2 = float(input("Enter the second number: "))
+average = (num1 + num2) / 2
+print("The average of the two numbers is: ", average)
+```
+
+6. Write a Python program to calculate the square of a number entered by the user.
+   ```python
+num = float(input("Enter a number: "))
+square = num ** 2
+print("The square of the number is: ", square)
+```
+
+URBAN EDG
+Chapter 3 - Strings
+
+A string is a data type in Python. It is a sequence of characters enclosed in quotes.
+
+We can primarily write a string in three ways:
+
+1. Single-quoted strings.
+2. Double-quoted strings.
+3. Triple-quoted strings.
+
+String Slicing
+→
+A string in Python can be sliced to get a part of the string.
+
+Consider the following string:
+name = "Harry"  # length = 5
+  H  a  r  r  y
+
+The index in a string starts from 0 to (length-1) in Python. To slice a string, we use the following syntax:
+SL = name[start_index: end_index]
+
+The first index is included, and the last index is not included.
+
+Examples:
+- sl[0:3] returns "Har"
+- sl[1:3] returns "ar"
+
+Characters from 0 to 3: "Har"
+Characters from 1 to 3: "ar"
+
+Negative Indices: Negative indices can also be used, as shown in the figure above. -1 corresponds to the (length-1) index, -2 to (length-2) index, and so on.
+
+URBAN EDGE
+Slicing with Skip Value
+We can provide a skip value as a part of our slice like this:
+word = "amazing"
+word[1:6:2] → 'mzn'
+Other Advanced Slicing Techniques
+word = "amazing"
+at
+word[7]
+> word[0:7] → 'amazing'
+word[0] → word[0:7] → 'a'
+String Functions
+Some of the mostly used functions to perform operations and manipulate strings are:
+1. Len() function
+→ This function returns the length of the string
+len("Harry") → returns 5
+27. String.endswith("rry") 
+→ This function tells whether the variable string ends with the string "rry" or not. If the string is "Harry", it returns True for "rry" since Harry ends with "ry"
+37. String.count("c") 
+→ Counts the total number of occurrences of any character
+47. String.capitalize() 
+→ This function capitalizes the first character of a given string
+
+URBAN EDGE
+
+5. String Find (word) - This function finds a word and returns the index of the first occurrence of that word in the string.
+
+6. String Replace (oldword, newword) - This function replaces the oldword with newword in the entire string.
+
+Escape Sequence Characters
+
+A sequence of characters after a backslash (\) is an escape sequence. Escape sequence characters comprise more than one character but represent one character when used within strings.
+
+Examples:
+
+- In
+- It
+- 1
+- \11 (representing a tab character)
+- \n (representing a newline character)
+- \t (representing a tab character)
+- \\ (representing a backslash character)
+
+Chapter 3 - Practice
+
+URBAN EDGE
+
+1. Write a Python program to display a user-entered name followed by "Good Afternoon" using the `input()` function.
+
+2. Write a program to fill in a letter template given below with name and date.
+
+    letter = """
+Dear <NAME>,
+You are selected !
+<DATE>
+"""
+
+3. Write a program to detect double spaces in a string.
+
+4. Replace the double spaces from Problem 3 with single spaces.
+
+5. Write a program to format the following letter using escape sequence characters.
+
+    letter = "Dear Harry, This Python Course is nice. Thanks!\n\nTT"
+
+Chapter 4 - Lists and Tuples
+
+EDG
+Python Lists are containers to store a set of values of any data type.
+
+```python
+friends = ["Apple", "Akash", "Rohan", 7, False]
+```
+
+List Indexing
+------------
+
+A list can be indexed just like a string.
+
+```python
+L1 = [7, 9, "Harry"]
+print(L1[0])  # => 7
+print(L1[1])  # => 9
+try:
+    print(L1[70])  # => Error (Index out of range)
+except IndexError:
+    print("Error: Index out of range")
+print(L1[0:2])  # => [7, 9]
+```
+
+List Slicing
+------------
+
+List Slicing is a way to extract a subset of elements from a list.
+
+```python
+print(L1[0:2])  # => [7, 9]
+print(L1[:2])   # => [7, 9]
+print(L1[1:])   # => [9, "Harry"]
+print(L1[:])    # => [7, 9, "Harry"]
+```
+
+List Methods
+------------
+
+Consider the following list:
+
+```python
+L1 = [1, 8, 7, 2, 21, 15, 17]
+```
+
+1. `L1.sort()`: Updates the list to `[1, 2, 7, 8, 15, 21]`.
+2. `L1.reverse()`: Updates the list to `[17, 15, 21, 8, 7, 2]`.
+3. `L1.append(8)`: Adds 8 at the end of the list.
+4. `L1.insert(3, 8)`: This will add 8 at index 3.
+
+```python
+print(L1.sort())  # => None (List sorting in-place)
+print(L1)         # => [1, 2, 7, 8, 15, 21]
+L1.reverse()
+print(L1)         # => [21, 15, 8, 7, 2, 1]
+L1.append(8)
+print(L1)         # => [21, 15, 8, 7, 2, 1, 8]
+L1.insert(3, 8)
+print(L1)         # => [21, 15, 8, 8, 7, 2, 1, 8]
+```
+
+URBAN EDGE
+5, Lesson 1: Populating Lists and Tuples in Python
+5.1. pop() Method
+The pop() method removes and returns an element at a specified index from a list.
+
+Example:
+- pop(2): Will delete the element at index 2 and return its value.
+
+6. remove() Method
+The remove() method removes the first occurrence of a specified value from a list.
+
+Example:
+- remove(21): Will remove the first occurrence of 21 from the list.
+
+Juples in Python
+A tuple is an immutable data type in python.
+↳ It cannot be changed
+A tuple is created using parentheses.
+- a = () => An empty tuple
+- a = (1,) => A tuple with only one element
+- A tuple with only one element needs a comma after the value
+- (1, 7, 2) => A tuple with more than one element
+
+Once defined, a tuple's elements cannot be altered or manipulated.
+
+Tuble Methods
+Consider the following tuple:
+a = (1, 7, 2)
+
+1. a. count(1): This method will return the number of times 1 occurs in a.
+2. a. index(1): This method will return the index of the first occurrence of 1 in a.
+
+Chapter 4 - Practice Set
+URBAN EDGE
+
+1. Write a program to store seven fruits in a list entered by the user.
+2. Write a program to accept marks of 6 students and display them in a sorted manner.
+3. Check that a tuple cannot be changed by Python.
+4. Write a program to sum a list of numbers.
+5. Write a program to count the number of zeros in the following tuple:
+   a = (7, 0, 8, 0, 0, 9)
+
+U
+EDGE
+Chapter 5: Dictionary & Sets
+
+A dictionary is a collection of key-value pairs.
+
+Syntax:
+```python
+{
+    "Key": "Value",
+    "harry": "Code",
+    "marks": "100",
+    "list": [1, 2, 9]
+}
+```
+
+Accessing Dictionary Elements
+---------------------------
+
+```python
+a = {
+    "Key": "Value",
+    "harry": "Code",
+    "marks": "100",
+    "list": [1, 2, 9]
+}
+
+print(a["Key"])  # Prints "Value"
+print(a["list"])  # Prints [1, 2, 9]
+```
+
+Properties of a Python Dictionary
+------------------------------
+
+```python
+# 1. It is unordered
+# 2. It is mutable
+# 3. It is indexed
+# 4. It cannot contain duplicate keys
+```
+
+Dictionary Methods
+-----------------
+
+### 1. items()
+Returns a list of (key, value) tuples.
+
+```python
+a = {
+    "name": "Harry",
+    "from": "India",
+    "marks": [92, 98, 96]
+}
+
+print(a.items())  # Returns a list of (key, value) tuples
+```
+
+### 2. keys()
+Returns a list containing dictionary's keys.
+
+```python
+a = {
+    "name": "Harry",
+    "from": "India",
+    "marks": [92, 98, 96]
+}
+
+print(a.keys())  # Returns a list containing dictionary's keys
+```
+
+### 3. update()
+Updates the dictionary with supplied key-value pairs.
+
+```python
+a = {
+    "name": "Harry",
+    "from": "India",
+    "marks": [92, 98, 96]
+}
+
+a.update({"friend": "Sam"})
+print(a)  # Prints the updated dictionary
+```
+
+a.
+Urban Edge
+4. get("name"): Returns the value of the specified key. 
+The value "Harry" is returned here.
+More methods are available on:
+Python Documentation: Sets
+https://docs.python.org
+A set is a collection of unique elements.
+S = set()  # Note: 'set' is a built-in Python type and should be capitalized
+
+b.
+=> No repetition is allowed!
+5. s.add(1)
+6. s.add(2)
+=> s = {1, 2}
+If you are a programming beginner without much knowledge of mathematical operations on sets, you can simply consider sets in Python as data types containing unique values.
+
+Properties of Sets
+1. Sets are unordered.
+2. Sets are unindexed.
+3. There is no way to change individual items in a set.
+4. Sets cannot contain duplicate values.
+
+Operations on Sets
+Consider the following set:
+s = {1, 8, 2, 3}
+10. len(s): Returns 4, the length of the set.
+17. s.remove(8): Updates the set s and removes 8.
+
+URBAN
+EDGE
+
+3. S. pape): Removes an arbitrary element from the set and returns the element removed.
+4. 5. clear (): Empties the set.
+5. Union ({8, 11, 13}): Returns a new set with all items from both sets. => {1, 2, 3, 8, 11, 13}
+6. 5. intersection ({8, 11, 13}, {1, 2, 3}): Returns a set which contains only items in both sets. => {8}
+ 
+R 
+3. R₁ + R₂ + R₃ ⇒ A ∪ B
+(0) R₁ + R₂ ⇒ A ∩ B
+(e) R₁ ⇒ A - B
+(RB - A
+12 = 2
+(d) to shut down
+totally
+Now
+A model
+oriented
+20
+ASMON
+
+Chapter 5: Practice Set
+
+1. Write a program to create a dictionary of Hindi words with values as their English translations. Provide the user with an option to look it up.
+
+2. Write a program to input eight numbers from the user and display all the unique numbers (once).
+
+3. Can we have a set with 18 (int) and "18" (str) as values in it?
+
+4. What will be the length of the following set:
+    5 = set()
+    5.add(20)
+    5.add(20.0)
+    5.add("20")
+    5 = {}
+    => Length of 5 after these operations?
+    What is the type of 5?
+
+5. Create an empty dictionary. Allow four friends to enter their favourite language as keys and their names as values. Assume that the names are unique.
+
+6. If names of two friends are the same, what will happen to the program in Problem 5?
+
+7. If languages of two friends are the same, what will happen to the program in Problem 5?
+
+Urban EDG 9
+
+Can you change the values inside a list that is contained in Set 5?
+5 = { 8, 7, 12, "Harry", [1, 2] }
+
+Chapter 6 - Conditional Expressions
+
+Sometimes we want to play pool if the day is Sunday.
+EDG on our phone is not relevant here.
+Sometimes we order ice cream online if the day is sunny.
+Sometimes we go hiking if our parents allow it.
+All these are decisions that depend on a condition being met.
+
+In Python programming, too, we must be able to execute instructions on a condition being met.
+This is what conditionals are for!
+
+If-else and elif in Python
+If-else and elif statements are a multiway decision taken by our program due to certain conditions in our code.
+
+Syntax:
+Indentation + if (condition 1) :
+print ("Yes")
+=> if condition 1 is true
+elif (condition 2):
+print ("No")
+=> if condition 2 is true
+else:
+print ("Maybe")
+
+Code example:
+a = 22
+if a > 20:
+print ("Greater")
+else:
+print ("Lesser")
+
+The Urban Edge
+
+When
+Quick Quiz: Write a program to print "yes" if the age entered by the user is greater than or equal to 18.
+
+Relational Operators
+Relational operators are used to evaluate conditions inside if statements. Some examples of operators are:
+- Greater than or equal to (>=)
+- Less than or equal to (<=)
+- Equal to (=)
+- Greater than (>)
+- Less than (<)
+
+Relational operators are used to compare two values and determine the relationship between them.
+
+Logical Operators
+In Python, logical operators operate on conditional statements. Examples include:
+- and: true if both operands are true, else false
+- or: true if at least one operand is true, else false
+- not: inverts true to false and false to true
+
+Elif Clause
+In Python, elif is short for "else if". An if statement can be chained together with multiple elif statements followed by an else statement. The structure is as follows:
+if (condition):
+    # Code
+elif (condition 2):
+    # Code
+elif (condition 3):
+    # Code
+else:
+    # Code
+
+This ladder will stop once a condition in an if or elif statement is met.
+
+EDGE
+The Important
+
+Important Notes: Interrogation
+There can be any number of cliffhanger statements.
+
+If all conditions inside if statements fail, 
+27 else is executed only if all the conditions inside elif statements fail.
+
+AMG
+UT
+ZIRNART
+Tore
+
+Chapter 6 - Practice Set
+URBAN EDGE
+
+1. Write a program to find the greatest of four numbers entered by the user.
+
+2. Write a program to determine whether a student is pass or fail, if it requires a total of 40% and at least 33% in each subject to pass. Assume three subjects and take marks as an input from the user.
+
+3. A spam comment is defined as a text containing any of the following keywords: "make a lot of money", "buy now", "subscribe this", or "click this". Write a program to detect these spams.
+
+4. Write a program to check whether a given username contains less than 10 characters or not.
+
+5. Write a program which finds out whether a given name is present in a list or not.
+
+6. Write a program to calculate the grade of a student from his marks based on the following scheme:
+- 90-100: A
+- 80-90: B
+- 70-80: C
+- 60-70: D
+- 50-60: E
+- 0-50: F
+
+URBAN EDGE
+
+7. Write a program to determine whether a post is talking about "Harry" or not, given the presence of "Harry" in the post.
+
+Note: The original text appears to be a jumbled collection of words and symbols. I have attempted to interpret the intended meaning and provide a corrected and enhanced version.
+
+Chapter 7 - Urban Edge
+Loops in Python
+
+Sometimes we want to repeat a set of statements in our program. For instance, printing numbers from 1 to 1000. Loops make it easy for a programmer to tell the computer which set of instructions to repeat and how.
+
+Types of Loops in Python
+There are primarily two types of loops in Python:
+1. While Loop
+2. For Loop
+
+We will look into these types of loops one by one.
+
+While Loop
+The syntax of a while loop looks like this:
+```python
+while Condition:
+    # Body of the loop
+```
+=> The block keeps executing until the Condition is true.
+
+In while loops, the condition is checked first. If it evaluates to True, the Body of the loop is executed; otherwise, not.
+
+If the loop is entered, the process of [Condition Check & Execution] is continued until the condition becomes False.
+
+Quick Quiz: Write a program to print numbers from 1 to 50 using a while loop.
+```python
+i = 1
+while i <= 50:
+    print(i)
+    i += 1
+```
+
+An Example
+i = 0
+URBAN
+EDG
+while i < 5:
+    print("Harry")
+    i = i + 1
+# Prints "Harry" 5 times!
+Note: If the condition never becomes false, the loop keeps getting executed.
+Quick Quiz: Write a program to print the content of a list using while loops.
+
+For Loop
+A for loop is used to iterate through a sequence (list, tuple, or string).
+The syntax of a for loop looks like this:
+l = [1, 7, 8]
+for item in l:
+    print(item)
+# Output: 1, 7, 8
+
+Range Function in Python
+→ print 1, 7, and 8
+The range function in Python is used to generate a sequence of numbers.
+We can also specify the start, stop, and step-size as follows:
+range(start, stop, step_size)
+Note: The step-size is usually not used with range().
+
+URBAN EDGE
+
+An Example Demonstrating the Range Function
+=============================================
+
+For Loop with Range Function
+---------------------------
+
+```python
+for i in range(0, 7):
+    print(i)
+```
+
+-> The `range(7)` function can also be used.
+
+This prints numbers from 0 to 6.
+
+Optional Else with For Loop
+---------------------------
+
+An optional `else` clause can be used with a for loop to execute code when the loop exhausts.
+
+Example:
+```python
+my_list = [1, 7, 8]
+for item in my_list:
+    else:
+        print(item)
+print("Done")  # This is printed when the loop exhausts
+```
+
+Output:
+```
+1
+7
+8
+Done
+```
+
+The Break Statement
+-------------------
+
+The `break` statement is used to exit a loop when encountered.
+
+It instructs the program to exit the loop immediately.
+
+Example:
+```python
+for i in range(0, 8):
+    print(i)
+    if i == 3:
+        break
+```
+
+Now, this will print 0, 1, 2, and 3.
+
+URBAN
+EDUCATION
+The Continue Statement
+
+The 'continue' statement is used to stop the current iteration of a loop and continue with the next iteration.
+
+It instructs the program to "skip this iteration" and move on to the next one.
+
+Example:
+```python
+for i in range(4):
+    print("printing")
+    if i == 2:
+        continue
+    print(i)
+```
+
+The 'pass' statement is a null statement in Python. It instructs the program to "do nothing" and can be used as a placeholder when a statement is required syntactically but no execution of code is necessary.
+
+Example:
+```python
+l = [1, 7, 8]
+for item in l:
+    pass
+```
+
+If the 'continue' statement is used without the 'pass' statement, the program will not throw an error, but it will also not execute any code after the 'continue' statement.
+
+However, if the 'pass' statement is not used, the program will throw a SyntaxError if it encounters the 'continue' statement, because the 'continue' statement requires a pass statement to be executed.
+
+Example:
+```python
+for i in range(4):
+    print("printing")
+    if i == 2:
+        continue
+        print(i)  # This line will throw a SyntaxError
+```
+
+In the example above, the 'continue' statement is used without a pass statement, so the program will throw a SyntaxError when it encounters the 'print(i)' statement.
+
+Chapter 7 - Practice Set
+
+URBAN
+EDG
+1. Write a program to print the multiplication table of a given number using a for loop.
+2. Write a program to greet all the people whose names are in a list l₁ and which start with the letter 'S'.
+   Stored in l₁ = ["Harry", "Saham", "Sachin", "Rahul"]
+3. Attempt problem 1 using a while loop.
+4. Write a program to find whether a given number is prime or not.
+5. Write a program to find the sum of the first n natural numbers using a while loop.
+6. Write a program to calculate the factorial of a given number using a for loop.
+7. Write a program to print the following star pattern for n = 3:
+   *
+   ***
+   *****
+8. Write a program to print the following star pattern for n = 3:
+   *
+   * *
+   * * *
+   * * * *
+   * * * * *
+
+URBAN
+EDG
+9. Write a program to print the following star pattern:
+ 
+    *
+   * *
+  *   *
+ *     *
+*       *
+
+10. Write a program to print the multiplication table of n using a for loop in reverse order.
+
+Note: The pattern is for n = 3, but it's not necessary to specify this as it's already shown in the pattern.
+
+Chapter 8 - Functions and Recursion
+
+URBAN EDG
+A function is a group of statements that perform
+a specific task.
+When a program becomes larger in size and its
+complexity grows, it becomes difficult for a programmer
+to keep track of which piece of code is
+doing what.
+A function can be reused by a programmer
+in the given program any number of
+times.
+
+Example and Syntax of a Function
+The syntax of a function looks as follows:
+def func1(): 
+    print("Hello")
+
+This function can be called
+anywhere in the program
+any number of
+times.
+
+Function Call
+Whenever we want to call a function, we put the
+name of the function followed by parentheses as
+follows:
+func1()
+
+Function Definition
+→ This is called a function definition.
+The part containing the exact set of instructions that
+are executed during the function call.
+
+URBAN EDG
+Quick Quiz: Write a Program to Greet a User with "Good Day" Using Functions
+
+Types of Functions in Python
+There are two types of functions in Python:
+1. Built-in Functions: Already present in Python, these functions are used for various purposes such as data manipulation and printing.
+   Examples of built-in functions include len(), print(), range(), etc.
+
+2. User-Defined Functions: Defined by the user, these functions can be customized to perform specific tasks.
+   The function we defined as func1() is an example of a user-defined function.
+
+Functions with Arguments
+A function can accept some values it can work with, which are placed in the parentheses.
+A function can also return values, as shown below:
+
+```python
+def greet(name):
+    hello = "Hello " + name
+    return hello
+```
+
+When "Harry" is passed to the greet function in the name argument, the following occurs:
+
+```python
+a = greet("Harry")
+```
+
+✓ a will now contain "Hello Harry"
+
+Default Parameter Value
+We can have a value as a default argument in a function.
+If we specify `name = "stranger"` in the line containing `def`, this value is used when no argument is passed.
+
+```python
+def greet(name="stranger"):
+    hello = "Hello " + name
+    return hello
+```
+
+Now, when the greet function is called without any argument, it will use the default value "stranger".
+
+URBAN EDGE
+
+Functions
+For example:
+def greet(name = "stranger"):
+    # function body
+greet()
+→ Name will be "stranger" in function body (default)
+greet("Harry") → Name will be "Harry" in function body (passed)
+
+Recursion
+Recursion is a function that calls itself.
+It is used to directly use a mathematical formula as a function.
+For example:
+def factorial(n):
+    if n == 0 or n == 1:
+        # Base condition which doesn't call the function any further
+        return 1
+    else:
+        # Function calling itself
+        return n * factorial(n-1)
+
+This works as follows:
+(4)
+Factorial of 4 (function called)
+= 4 * factorial(3)
+= 4 * (3 * factorial(2))
+= 4 * 3 * (2 * factorial(1))
+= 4 * 3 * 2 * 1
+= 24
+(function returned)
+
+URBAN EDGE
+
+The programmes need to be extremely careful while working with recursion to ensure that the function does not infinitely keep calling itself.
+Recursion is sometimes the most direct way to code an algorithm.
+
+51
+Chapter 8 - Practice Set
+URBAN EDG
+1. Write a program using a function to find the greatest of three numbers.
+2. Write a Python program using a function to convert Celsius to Fahrenheit.
+3. How do you prevent a Python print() function from printing a new line at the end?
+4. Write a recursive function to calculate the sum of the first n natural numbers.
+5. Write a Python function to print the first n lines of the following pattern:
+    * * *
+    *
+    *
+    *
+    → For n=3
+6. Write a Python function which converts inches to centimeters.
+7. Write a Python function to remove a given word from a list and return it at the same time.
+8. Write a Python function to print the multiplication table of a given number.
+
+URBAN EDGE
+Project 1: Snake, Water, Gun Game
+
+**Game Description:**
+The Snake, Water, Gun Game is a popular childhood game that involves making choices between three options: snake, water, and gun. The game is played by making a choice, and the outcome is determined by a set of rules. In this project, we will create a Python program that allows users to play this game.
+
+**Game Rules:**
+
+- If the user chooses snake and the computer chooses water, the user wins.
+- If the user chooses water and the computer chooses gun, the user wins.
+- If the user chooses gun and the computer chooses snake, the user wins.
+- If the user and the computer choose the same option, it's a tie.
+- If the user chooses gun and the computer chooses water, the computer wins.
+- If the user chooses snake and the computer chooses gun, the computer wins.
+
+**Task:**
+Write a Python program that allows users to play the Snake, Water, Gun Game against the computer. The program should:
+
+1. Ask the user to make a choice (snake, water, or gun).
+2. Generate a random choice for the computer.
+3. Determine the winner based on the game rules.
+4. Display the result to the user.
+
+**Deliverables:**
+
+- A Python program that meets the requirements above.
+- A clear and concise explanation of the game rules and the program's functionality.
+
+Chapter 9: File I/O
+-----------------
+
+Lost
+Urban EDG
+The Random Access Memory is volatile, and all its contents are lost once a program terminates.
+In order to persist data forever, we use files.
+A file is data stored in a storage device. A Python program can interact with the file by reading content from it and writing content to it.
+
+Types of Files
+--------------
+
+There are two types of files:
+1. Text files (e.g., .txt, .csv, etc.)
+2. Binary files (e.g., .jpg, .dat, etc.)
+
+RAM = Volatile
+HDD = Non-Volatile
+
+Opening a File
+-------------
+
+Python has a built-in function called `open()` for opening files. It takes two parameters: `filename` and `mode`.
+
+```python
+open("this.txt", "r")
+```
+
+In the above example, `"this.txt"` is the filename and `"r"` is the mode of opening (read mode).
+
+Modes of Opening a File
+------------------------
+
+Here are some common modes of opening a file:
+
+- `r`: read mode (default)
+- `w`: write mode
+- `a`: append mode
+- `x`: create mode (exclusive)
+- `b`: binary mode
+- `t`: text mode (default)
+- `+`: update mode (read and write)
+
+Python has a lot of functions for reading, updating, and deleting files.
+
+URBAN EDGE
+
+Reading a File in Python
+------------------------
+
+To read a file in Python, you can use the `open()` function.
+
+```python
+f = open("this.txt", "r")
+```
+
+→ Open the file in read mode (`"r"`)
+
+```python
+text = f.read()  # Read its contents
+print(text)  # Print its contents
+```
+
+To close the file, use the `close()` method:
+
+```python
+f.close()
+```
+
+Specifying the Number of Characters to Read
+-----------------------------------------
+
+You can also specify the number of characters to read using the `read()` function:
+
+```python
+f.read(2)  # Reads the first 2 characters
+```
+
+Other Methods to Read a File
+---------------------------
+
+You can also use the `readline()` function to read a file one line at a time:
+
+```python
+f.readline()  # Reads one line from the file
+```
+
+Modes of Opening a File
+-----------------------
+
+Python provides several modes to open a file:
+
+- `"r"`: Open for reading
+- `"w"`: Open for writing (will overwrite any existing file)
+- `"a"`: Open for appending (will add new content to the end of the file)
+- `"r+"`: Open for updating (can read and write)
+
+You can also specify additional modes, such as:
+
+- `"rb"`: Open for reading in binary mode
+- `"rt"`: Open for reading in text mode
+
+Writing Files in Python
+-----------------------
+
+To write to a file, you first need to open it in write or append mode, and then use the `write()` method:
+
+```python
+f = open("this.txt", "w")
+f.write("Hello, World!")  # Write to the file
+f.close()
+```
+
+URBAN EDGE
+
+Python File Handling
+=====================
+
+### Opening and Closing Files
+
+In Python, you can open a file using the built-in `open()` function. The `with` statement is the recommended way to handle file operations.
+
+```python
+with open("this.txt", "w") as f:
+    f.write("This is nice")
+```
+
+### Benefits of the `with` Statement
+
+- The `with` statement can be called multiple times.
+- It automatically closes the file when you're done with it, eliminating the need for `f.close()`.
+
+### Example Usage
+
+```python
+with open("this.txt", "r") as f:
+    content = f.read()
+    print(content)
+```
+
+### Best Practices
+
+- Always use the `with` statement when working with files.
+- Specify the file mode (e.g., "r" for read, "w" for write) when opening a file.
+- Use `f.write()` to write to a file, not `f.clase()`.
+
+URBAN EDGE
+CHAPTER 9 - PRACTICE SET
+
+1. Write a program to read text from a given file 'poems.txt' and find out whether it contains the word 'twinkle'.
+
+2. The game() function in a program lets a user play a game and returns the score as an integer. You need to read a file 'History.txt' which either contains a blank or the previous Hi-Score. You need to write a program to update the Hi-Score whenever game() breaks the Hi-Score.
+
+3. Write a program to generate multiplication tables up to 20 and write it to different files. Place these files in a folder for a 5-year-old.
+
+4. A file contains a word "Donkey" multiple times. You need to write a program which replaces this word with '######' by updating the same file.
+
+5. Repeat program 4 for a list of such words to be censored.
+
+6. Write a program to mine a log file and find out whether it contains 'python'.
+
+7. Write a program to find out the line number where 'python' is present from Ques 6.
+
+URBAN EDG
+
+8. Write a program to make a copy of a text file.
+ 
+9. Write a program to determine whether a file is identical and matches the content of another file.
+
+10. Write a program to write a script to output the contents of a file using Python.
+
+!! Write a Python program to rename a file to "renamed_by_ "bython.txt".
+
+Note: The original text had several spelling and grammar errors, including "EDG" which seems to be an acronym without a clear meaning. I have assumed it to be part of the title. Also, "wife" should be "write" and "wing" should be "with".
+
+URBAN EDG
+Chapter 10 - Object-Oriented Programming
+
+Solving a problem by creating objects is one of the most popular approaches in programming. This is Object-Oriented programming.
+
+Called "Object-Oriented Programming," this concept focuses on using reusable code.
+
+**Class**
+Implements the DRY principle
+A class is a blueprint for creating objects.
+
+**Blank Template**
+Contains information to create a valid object
+
+```python
+class Application:
+    # Contains info to create a valid object
+    pass
+```
+
+**Filled by a Student**
+An instance of the Student class
+
+```python
+student = Student()
+```
+
+**Object Instantiation**
+Memory allocated only after object instantiation
+
+**The Syntax of a Class**
+```python
+class Employee:
+    # methods and variables
+    pass
+```
+
+**Class Name**
+The class name is written in PascalCase
+
+**An Object**
+An object is an instance of a class. When a class is defined, a template (info) is defined. Memory is allocated only after object instantiation.
+
+**Objects and Methods**
+Objects of a given class can invoke the methods available to it without revealing the implementation.
+
+→ Abstraction and Encapsulation!
+Details are hidden from the user.
+
+URBAN EDGE
+Modelling a problem in 0.0Ps
+"We identify the following in our problem.
+Noun
+→ Class
+t
+Adjective
+-
+Attributes
+-
+→ Verbs
+Employee
+name, age, salary
+get salary (), increment ()
+→ Methods →
+Class Attributes
+An attribute that belongs to the class rather than
+a particular object.
+Example:
+Class Employee:
+Company = "Google"
+→
+[Specific to each class]
+ALL
+harry = Employer ()
+-> object instantiation
+harry.company
+Employee.company = "YouTube"
+Instance Attributes
+An attribute that belongs to the instance (object)
+Assuming the class from the previous example:
+harry.name = "Harry"
+Changing class attribute
+harry.salary = 30000
+EZ Adding instance attributes
+Note: Instance attributes take precedence over class attributes
+during assignment and retrieval
+harry.attribute
+->
+Is attribute present in the object ?
+②Is attribute 1 present in the class?
+
+URBAN EDGE
+
+"Self Parameter"
+Self refers to the instance of the class
+It is automatically passed with a function call from an object
+
+Harry.get_salary()
+Harry
+Here, self is equivalent to Employee.get_salary(harry)
+
+The function get_salary is defined as:
+
+class Employee:
+    company = "Google"
+
+    def get_salary(self):
+        print("Salary is not there")
+
+Sometimes we need a function that doesn't use the self parameter.
+We can define a static method like this:
+
+@staticmethod
+def greet():
+    print("Hello user")
+
+__init__() Constructor
+→ This decorator marks greet as a static method
+
+__init__() is a special method that is first run as soon as the object is created.
+It is also known as the constructor.
+It takes at least one argument and can also take further arguments.
+
+```python
+# Urban Edge Class
+class Employee:
+    """
+    A class representing an employee.
+    
+    Attributes:
+    ----------
+    name : str
+        The name of the employee.
+    """
+
+    def __init__(self, name):
+        """
+        Initializes an Employee object.
+        
+        Parameters:
+        ----------
+        name : str
+            The name of the employee.
+        """
+        self.name = name
+
+    def get_salary(self):
+        """
+        Returns the salary of the employee.
+        
+        Returns:
+        -------
+        None
+        """
+        # This method should be implemented to return the salary
+        pass
+
+# Example usage:
+harry = Employee("Harry")
+# Object can be instantiated using the constructor like this.
+```
+
+150
+Chapter 10 - Practice Set
+URBAN
+EDG
+1. Create a class Programmer for storing information about few programmers working at Microsoft.
+2. Write a class Calculator capable of finding the square, cube, and square root of a number.
+3. Create a class with a class attribute 'a'. Create an object from it and set 'a' directly using the object. Does this change the class attribute? If so, try setting 'a' to 0.
+4. Add a static method in the Calculator class to greet the user with 'hello'.
+5. Write a class Train which has methods to book a ticket, get the status (number of seats) and get fare information of trains running under Indian Railways.
+6. Can you change the 'self' parameter inside a class to something else (say 'harry')? Try changing 'self' to 'self' or 'harry' and see the effects.
+
+URBAN EDGE
+Chapter 11: Inheritance and More on Object-Oriented Programming
+
+Inheritance is a way of creating a new class from an existing class.
+
+Syntax:
+```python
+class Employee:
+    # Code
+```
+
+```python
+class Programmer(Employee):
+    # Code
+```
+
+→ Base Class
+→ Derived or child class
+
+We can use the methods and attributes of the `Employee` class in the `Programmer` object.
+Also, we can overwrite or add new attributes and methods in the `Programmer` class.
+
+Types of Inheritance:
+
+1. Single Inheritance
+2. Multiple Inheritance
+3. Multilevel Inheritance
+
+Single Inheritance
+Single inheritance occurs when a child class inherits only a single parent class.
+
+In this type of inheritance, the child class inherits all the attributes and methods of the parent class.
+
+```python
+class Base:
+    # Code
+
+class Derived(Base):
+    # Code
+```
+
+Multiple Inheritance
+Multiple inheritance occurs when a child class inherits from more than one parent class.
+
+[Parent 1]
+[Parent 2]
+Child
+
+Multilevel Inheritance
+When a child class becomes a parent for another child class:
+
+[Parent]
+[Child 1]
+[Child 2]
+
+Super() method
+The Super() method is used to access the methods of the super class in the derived class.
+It calls the constructor of the base class:
+Super().__init__()
+
+Class methods
+A class method is a method that is bound to the class and not the object of the class.
+The @classmethod decorator is used to create a class method.
+
+1535
+Syntax to Create a Class Method
+================================
+
+### Using the `@classmethod` Decorator
+
+```python
+@classmethod
+def class_method(cls, cle, pr, pe):
+    pass
+```
+
+### Using the `@property` Decorator
+
+Consider the following class:
+
+```python
+class Employee:
+    @property
+    def name(self):
+        return self.ename
+```
+
+If `e` is an object of class `Employee`, we can print `e.name` to print the `ename` or `name()` function.
+
+### Using Getters and Setters
+
+The method `name` with the `@property` decorator is called a **getter**.
+
+We can define a function with the `@name.setter` decorator like below:
+
+```python
+class Employee:
+    @property
+    def name(self):
+        return self.ename
+
+    @name.setter
+    def name(self, value):
+        self.ename = value
+```
+
+### Operator Overloading in Python
+
+Operators in Python can be overloaded using dunder methods.
+
+These methods are called when a given operator is used on the objects.
+
+```python
+class Employee:
+    def __init__(self, ename, epr, epe):
+        self.ename = ename
+        self.epr = epr
+        self.epe = epe
+
+    def __str__(self):
+        return f"Employee: {self.ename}"
+
+e = Employee("John Doe", "Software Engineer", "Python")
+print(e)  # Output: Employee: John Doe
+```
+
+URBAN EDGE
+Overloading operators in Python can be achieved using the following methods:
+
+p1 + p2
+→ p1.__add__(p2)
+p1 - p2
+→ p1.__sub__(p2)
+p1 * p2
+→ p1.__mul__(p2)
+p1 / p2
+→ p1.__truediv__(p2)
+p1 // p2
+→ p1.__floordiv__(p2)
+p1 % p2
+→ p1.__mod__(p2)
+p1 ** p2
+→ p1.__pow__(p2)
+
+Other dunder / magic methods in Python:
+- __str__() is used to set what gets displayed upon calling str(obj)
+- __len__() is used to set what gets displayed upon calling len(obj)
+
+1
+3
+211
+Chapter 11 - Practice Set
+URBAN
+EDG
+
+1. Create a class E2dVector and use it to create another class representing a 3DVector.
+2. Create a class Pet from a class Animal and further create a class Dog from Pet. Add a method bark to class Dog.
+3. Create a class Employee and add salary and increment properties to it.
+4. Write a method Salary After Increment method with a @property decorator with a setter which changes the value of increment based on the salary.
+5. Write a class Complex to represent complex numbers, along with overloaded operators + and * which adds and multiplies them.
+6. Write a class Vector representing a vector of n dimension. Overload the + and * operators which calculates the sum and the dot product of them.
+7. Write a str__() method to print the vector as follows: 7i + 8j + 10k. Assume vector of dimension 3 for this problem.
+
+Chapter 11 - Practice Set
+URBAN
+EDG
+
+1. Create a class E2dVector and use it to create another class representing a 3DVector.
+2. Create a class Pet from a class Animal and further create a class Dog from Pet. Add a method bark to class Dog.
+3. Create a class Employee and add salary and increment properties to it.
+4. Write a method Salary After Increment method with a @property decorator with a setter which changes the value of increment based on the salary.
+5. Write a class Complex to represent complex numbers, along with overloaded operators + and * which adds and multiplies them.
+6. Write a class Vector representing a vector of n dimension. Overload the + and * operators which calculates the sum and the dot product of them.
+7. Write a str__() method to print the vector as follows: 7i + 8j + 10k. Assume vector of dimension 3 for this problem.
+
+```python
+class E2dVector:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class Vector3D(E2dVector):
+    def __init__(self, x, y, z):
+        super().__init__(x, y)
+        self.z = z
+
+class Animal:
+    pass
+
+class Pet(Animal):
+    pass
+
+class Dog(Pet):
+    def bark(self):
+        return "Woof!"
+
+class Employee:
+    def __init__(self, salary, increment):
+        self.salary = salary
+        self.increment = increment
+
+    @property
+    def salary_after_increment(self):
+        return self.salary + self.increment
+
+    @salary_after_increment.setter
+    def salary_after_increment(self, value):
+        self.increment = value - self.salary
+
+class Complex:
+    def __init__(self, real, imag):
+        self.real = real
+        self.imag = imag
+
+    def __add__(self, other):
+        return Complex(self.real + other.real, self.imag + other.imag)
+
+    def __mul__(self, other):
+        return Complex(self.real * other.real - self.imag * other.imag, self.real * other.imag + self.imag * other.imag)
+
+class Vector:
+    def __init__(self, *args):
+        self.dimensions = args
+
+    def __add__(self, other):
+        if len(self.dimensions) != len(other.dimensions):
+            raise ValueError("Both vectors must have the same number of dimensions")
+        return Vector(*[a + b for a, b in zip(self.dimensions, other.dimensions)])
+
+    def __mul__(self, other):
+        if len(self.dimensions) != len(other.dimensions):
+            raise ValueError("Both vectors must have the same number of dimensions")
+        return sum(a * b for a, b in zip(self.dimensions, other.dimensions))
+
+    def __str__(self):
+        return " + ".join(f"{a}i" if i == 0 else f"{a}{chr(106 + i)}" for i, a in enumerate(self.dimensions))
+
+v = Vector(7, 8, 10)
+print(v)  # Output: 7i + 8j + 10k
+```
+
+7. 
+刊登于 URBAN EDGE
+Override the --len-- () method on Vector
+of
+Problem 5: Displaying the Dimension of a Vector
+
+To display the dimension of a Vector, we need to override the --len-- () method.
+
+Project 2 - The Perfect Guess
+
+Urban Edge Development
+We are going to write a program that generates a random number and asks the user to guess it.
+
+If the player's guess is higher than the actual number, the program displays "Lower number, please."
+Similarly, if the user's guess is too low, the program prints "Higher number, please."
+
+When the user guesses the correct number, the program displays the number of guesses the player used to arrive at the number.
+
+Hint: Use the random module.
+
+Chapter 12 - Advanced Python 1
+Exception Handling in Python
+There are many built-in exceptions which are raised in Python when something goes wrong.
+Exceptions in Python can be handled using a try-except statement. The code that handles the exception is written in the except clause.
+
+# Code
+try:
+    # Code
+except Exception as e:
+    print(e)
+# → Code which might throw an exception
+
+When the exception is handled, the code flow continues without program interruption.
+We can also specify the exceptions to catch like below:
+try:
+    # Code
+except ZeroDivisionError:
+    # Code to handle ZeroDivisionError
+except TypeError:
+    # Code to handle TypeError
+except Exception:
+    # Code to handle all other exceptions
+# → All other exceptions are handled here.
+
+Raising Exceptions
+We can raise custom exceptions using the raise keyword in Python.
+
+URBAN EDG
+Try with Else Clause
+Sometimes we want to run a piece of code when a try block is successful.
+# Some code
+try:
+    # Code
+except Exception as e:
+    # Handle the exception
+else:
+    # Code that runs when the try block is successful
+    # Some Code
+
+Try with Finally
+Python offers a finally clause, which ensures the execution of a piece of code
+irrespective of the exception.
+try:
+    # Some code
+except Exception as e:
+    # Handle the exception
+finally:
+    # Code that runs regardless of the exception
+    # Some code
+    # Some Code
+
+If __name__ == "__main__"
+→ This is executed regardless of error!
+In Python, the expression __name__ evaluates to the name of the module in
+which the program is ran.
+• When Python is run directly from the Command line,
+the __name__ variable is set to "__main__".
+Thus, this behaviour is used to check whether a module is run directly
+or imported to another file.
+Module is run directly
+If the module is being imported, the __name__ variable is set to the module's name.
+
+URBAN EDGE
+The Global Keyword
+The global keyword is used to modify a variable outside the current scope.
+
+The Enumerate Function in Python
+The enumerate function adds a counter to an iterable and returns it.
+
+List Iteration
+For i, item in enumerate(list1):
+    print(i, item)
+# Prints the items of list1 along with their indices.
+
+Comprehensions with Index
+List Comprehension is an elegant way to create lists based on existing lists.
+
+Example:
+list1 = [1, 7, 12, 11, 22]
+list2 = [item for item in list1 if item > 12]
+# list2 will contain items from list1 that are greater than 12.
+
+Chapter 12 - Practice Set
+
+URBAN
+EDG
+
+1. Write a program to open three files (1.txt, 2.txt, and 3.txt). If any of these files are not present, a message should be printed without exiting the program.
+
+2. Write a program to print the third, fifth, and seventh elements from a list using the enumerate function.
+
+3. Write a list comprehension to print a list that contains the multiplication table of a user-entered number.
+
+4. Write a program to display a/b where a and b are integers. If b = 0, display "Infinite" by handling the ZeroDivisionError.
+
+5. Store the multiplication tables generated in Problem 3 in a file named Tables.txt.
+
+Chapter 13 - Advanced Python
+
+Virtual Environment
+-------------------
+
+An environment that is similar to the system interpreter but is isolated from other Python environments on the system.
+
+Installation
+------------
+
+To use virtual environments, we write:
+
+    as pip install virtualenv
+
+We create a new environment using:
+
+    virtualenv myprojectenv
+
+This command creates a new virtual environment in a directory named `myprojectenv`.
+
+The next step after creating the virtual environment is to activate it.
+
+• We can now use this virtual environment as a separate Python installation.
+
+Using the Virtual Environment
+---------------------------
+
+To see all the packages installed in the virtual environment, use the following command:
+
+    pip freeze
+
+This command returns all the packages installed in the virtual environment along with their versions.
+
+The `pip freeze` command also generates a requirements file. To do this, use the following command:
+
+    pip freeze > requirements.txt
+
+This command creates a file named `requirements.txt` in the same directory containing the output of `pip freeze`.
+
+We can distribute this file to other users and they can recreate the same environment using:
+
+    pip install -r requirements.txt
+
+KASRU
+URBAN
+EDG
+pip install -r requirements.txt
+Lambda Functions
+Functions created using an expression, known as lambda functions
+Keyword: lambda
+Syntax:
+Example:
+lambda arguments: expression
+Square = lambda x: x**2
+Square(6)
+→ returns 36
+Can be used as a normal function
+Sum = lambda a, b, c: a + b + c
+Sum(1, 2, 3)
+bin method (strings)
+→ returns a binary string
+Creates a string from iterable objects
+l = ["apple", "mango", "banana"]
+", ".join(l)
+The above line will return "apple, mango, banana"
+format method (strings)
+Formats the values inside the string into a desired output
+template format (e.g., "{}", "{}....").
+Arguments
+Note: 
+- The correct keyword for installing requirements is "-r" not "- requitiments.txt".
+- Added title case for "Lambda Functions" and "Keyword: lambda".
+- Corrected the syntax for lambda functions to include a colon and the correct operator for squaring a number.
+- Added commas to the "Sum" function for better readability.
+- Corrected the "bin method" description to reflect that it returns a binary string.
+- Corrected the "join" method to use the correct method name and added a space after the comma in the string.
+- Corrected the "format method" description to reflect that it formats the values inside the string.
+- Added an example for the "format method" and corrected the template format description.
+
+Syntax for format looks like:
+{ } a
+2 URBAN EDG good { }".format("Harry", "boy") -> "Harry is a good boy."
+"{1} is a good {0}".format("Harry", "boy")
+Output for ①: 
+"Harry is a good boy."
+
+Output for ③: 
+"boy is a good Harry"
+
+Map, Filler, and Reduce
+Map applies a function to all the items in an input list.
+Syntax: 
+map() can be a lambda function
+map(function, input_list)
+
+Filter creates a list of items for which the function returns true.
+Syntax: 
+list(filter(function, input_list))
+Can be a lambda function
+
+Reduce applies a rolling computation to sequential pairs of elements.
+from functools import reduce
+val = reduce(function, list)
+Can be a lambda function
+
+If the function computes the sum of two numbers and the input list contains two elements, the result will be their sum.
+
+KAERU: List Computation
+==========================
+
+### List Initialization
+
+```python
+list = [1, 2, 3, 4]
+```
+
+### Urban Computation
+
+```python
+urb = 1 + 2
+print(urb)
+```
+
+### Edge Computation
+
+```python
+edge = 34
+print(edge)
+edge = 3 + 34
+print(edge)
+```
+
+### Sequential Computation
+
+```python
+# Using the list initialized earlier
+result = 6 + 4 + 10
+print(result)
+```
+
+### Output
+
+```python
+7
+34
+67
+20
+```
+
+Chapter 13 - Practice Set
+URBAN
+EDG
+
+1. Create two virtual environments and install a few packages in the first one.
+   In the first environment, how do you create a similar setup in the second one?
+
+2. Write a program to input the name, marks, and phone number of a student and format it using the format function, like below:
+   "The name of the student is Harry, his marks are 72 and his phone number is 99999888."
+
+3. A list contains the multiplication table of 7. Write a program to convert it to a vertical string of the same numbers (17).
+
+4. Write a program to filter a list of numbers that are divisible by 5.
+
+5. Write a program to find the maximum of the numbers in a list using the reduce function.
+
+6. Run pip freeze for the system interpreter. Take the contents and create a similar virtual environment.
+
+7. Explore the Flask module and create a web server using Flask and Python.
+
+Project 3 - Student Library System
+
+Urban Edge Development Group
+Implement a Student Library System using Object-Oriented Programming (OOPs) concepts.
+
+The system will allow students to borrow books from a list of available books.
+Create separate classes for Library and Student.
+
+The program must be menu-driven, allowing users to interact with the system through a user-friendly interface.
+You are free to choose methods and attributes to implement this functionality.
+

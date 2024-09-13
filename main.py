@@ -43,7 +43,7 @@ def process_file(file_path, output_text_file):
         text = correct_grammar_and_context(text)
 
 
-        all_text += f"Page {i + 1}:\n{text}\n\n"
+        all_text += f"{text}\n\n"
 
     # Save all the extracted text to a single file
     with open(output_text_file, 'w', encoding="UTF-8") as file:
@@ -53,10 +53,10 @@ def process_file(file_path, output_text_file):
 
 if __name__ == "__main__":
     # Path to the file (PDF or image)
-    file_path = 'comp.jpg'
+    file_path = 'samples/python.pdf'
 
     # Path to save the extracted text
-    output_text_file = 'extracted_text.txt'
+    output_text_file = 'extracted_text3.txt'
 
     # Process the file and extract text
     process_file(file_path, output_text_file)
