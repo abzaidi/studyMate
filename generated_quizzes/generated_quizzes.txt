@@ -1,0 +1,38 @@
+
+Question: What are the two main components of any kind of computer?
+
+1. Software and Network
+2. Hardware and Software
+3. Input Devices and Output Devices
+4. CPU and Motherboard
+
+Correct Answer: 2. Hardware and Software
+
+Question: What are input devices responsible for?
+
+1. Translating data from humans into a format that a computer can understand
+2. Translating data from a computer into a format that humans can understand
+3. Processing information in a computer
+4. Storing data in a computer
+
+Correct Answer: 1. Translating data from humans into a format that a computer can understand
+
+Question: What is the CPU responsible for in a computer?
+
+1. Storing data
+2. Translating data from humans into a format that a computer can understand
+3. Processing information
+4. Displaying data on a screen
+
+Correct Answer: 3. Processing information
+
+
+Question: What type of operations does the Arithmetic Logical Unit (ALU) execute?
+
+1. Input/Output operations
+2. Arithmetic and logical operations
+3. Data manipulation and storage
+4. Memory management and control
+
+Correct Answer: 2. Arithmetic and logical operations
+
