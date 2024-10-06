@@ -4,6 +4,7 @@ import os
 from pdf_to_images import convert_pdf_to_images, image_to_byte_array
 from text_extraction import extract_text_from_image
 from text_cleaning import correct_grammar_and_context
+import quiz_creation
 from dotenv import load_dotenv, find_dotenv
 from PIL import Image
 
@@ -53,10 +54,18 @@ def process_file(file_path, output_text_file):
 
 if __name__ == "__main__":
     # Path to the file (PDF or image)
-    file_path = 'samples/python.pdf'
+    file_path = 'samples/sqe.PNG'
 
     # Path to save the extracted text
-    output_text_file = 'extracted_text3.txt'
+    output_text_file = "extracted_texts/extracted_text4.txt"
+
+    output_quiz_file = 'generated_quizzes/generated_quizzes2.txt'
 
     # Process the file and extract text
     process_file(file_path, output_text_file)
+
+    # Generate quizzes from the extracted text
+    quizzes = quiz_creation.generate_quizzes_from_file(output_text_file)
+
+    # Write the generated quizzes to a file
+    quiz_creation.write_quizzes_to_file(output_quiz_file, quizzes)

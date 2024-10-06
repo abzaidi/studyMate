@@ -1,0 +1,39 @@
+Configuration Control Change OR Control
+
+G. Change of Management
+Most updated version available for the whole team.
+
+Middle Box:-
+Software code
+Design specifications
+Requirement document
+
+Aspects of Defect are: 
+→ Errors
+→ Faults
+→ Failures
+
+Relationship is not 1 to 1.
+
+Historical Software Failures
+1. First launch of the space shuttle
+2. Airbus 320
+
+E. Quality
+Pre-requisites
+For
+To
+A.
+Before
+Begin
+Different
+Views
+of Quality:
+Quality
+1. External Quality - attributes
+2. Internal
+Process Quality
+
+2. SCAN Any Scanner
+Analysis
+

@@ -15,7 +15,11 @@ def quiz_creation(page_text):
         from the provided text to help students prepare for exams. Focus on the important, 
         meaningful information in the text and ignore any irrelevant details. Each quiz 
         should include one question, one correct answer, and three distractor options.
-        if there is not enough information to generate a question or correct answer
+        Each distractor should be plausible and relevant to the correct answer but could be misleading
+        and different in length. The correct answer should be randomly placed among the four options.
+        The quiz should be clear, concise, and well-structured to test the students' understanding of the text
+        and the question should provide complete information without requiring outside knowledge or context.
+        If there is not enough information to generate a question or correct answer
         or distractor then simply do not attempt to generate a quiz from that information.
         Depending on the amount of important information, generate between 1 to 5 quizzes per page.
         Do not create quizzes with the same information more than one time, try to make each quiz unique
@@ -23,10 +27,10 @@ def quiz_creation(page_text):
         commentary or explanations. Do not include phrases like 'Here are 2 quizzes based on the provided text:' etc.
         The format for each quiz should be:\n\n
         Question: <Question>\n
-        1. <Option 1>\n
-        2. <Option 2>\n
-        3. <Option 3>\n
-        4. <Option 4>\n
+        a. <Option 1>\n
+        b. <Option 2>\n
+        c. <Option 3>\n
+        d. <Option 4>\n
         Correct Answer: <Correct Option>"""
     
     # User prompt - the actual page content (text) that is used for generating the quiz
@@ -46,10 +50,10 @@ def quiz_creation(page_text):
             },
         ],
         max_tokens=1000,
-        temperature=0.7,
-        top_p=0.7,
+        temperature=0.8,
+        top_p=0.9,
         top_k=50,
-        repetition_penalty=1,
+        repetition_penalty=1.1,
         stop=["<|eot_id|>","<|eom_id|>"],
         stream=False
     )
@@ -85,7 +89,7 @@ def write_quizzes_to_file(output_file, quizzes):
 
 # Example usage
 if __name__ == "__main__":
-    input_file = "extracted_texts/extracted_text.txt"  # The input text file with the material
+    input_file = "extracted_texts/extracted_text2.txt"  # The input text file with the material
     output_file = "generated_quizzes.txt"  # The output file to store generated quizzes
     
     # Generate quizzes from the input file
