@@ -4,7 +4,7 @@ import os
 from pdf_to_images import convert_pdf_to_images, image_to_byte_array
 from text_extraction import extract_text_from_image
 from text_cleaning import correct_grammar_and_context
-import quiz_creation
+import quiz_creation, qna_creation
 from dotenv import load_dotenv, find_dotenv
 from PIL import Image
 
@@ -61,6 +61,8 @@ if __name__ == "__main__":
 
     output_quiz_file = 'generated_quizzes/generated_quizzes2.txt'
 
+    output_qna_file = "generated_qna/generated_qna2.txt"
+
     # Process the file and extract text
     process_file(file_path, output_text_file)
 
@@ -69,3 +71,11 @@ if __name__ == "__main__":
 
     # Write the generated quizzes to a file
     quiz_creation.write_quizzes_to_file(output_quiz_file, quizzes)
+
+    # Generate question-answer pairs from the extracted text
+    qna = qna_creation.generate_qna_from_file(output_text_file)
+
+    # Write the generated quizzes to a file
+    qna_creation.write_qna_to_file(output_qna_file, qna)
+
+
