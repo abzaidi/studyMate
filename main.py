@@ -40,7 +40,6 @@ def process_file(file_path, output_text_file):
 
         # Clean the extracted text
         # text = normalize_text(text)
-        # text = correct_spelling(text)
         text = correct_grammar_and_context(text)
 
 
