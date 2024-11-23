@@ -56,9 +56,9 @@ if __name__ == "__main__":
     file_path = 'samples/sqe.PNG'
 
     # Path to save the extracted text
-    output_text_file = "extracted_texts/extracted_text4.txt"
+    output_text_file = "extracted_texts/extracted_text5.txt"
 
-    output_quiz_file = 'generated_quizzes/generated_quizzes2.txt'
+    output_quiz_file = 'generated_quizzes/generated_quizzes3.txt'
 
     output_qna_file = "generated_qna/generated_qna2.txt"
 
