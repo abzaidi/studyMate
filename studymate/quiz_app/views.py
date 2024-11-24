@@ -15,4 +15,4 @@ def registerPage(request):
 
 
 def main(request):
-    return HttpResponse("This is the main page!!")
+    return render(request, 'main.html')
