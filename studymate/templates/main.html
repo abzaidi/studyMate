@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Generator</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <h1>Quiz Generator</h1>
+    <form method="post" action="">
+        {% csrf_token %}
+        <label for="text_input">Enter Text for Quiz Generation:</label>
+        <textarea id="text_input" name="input_text" placeholder="Paste your text here..."></textarea>
+        <br>
+        <button type="submit" class="button">Generate Quiz</button>
+    </form>
+
+    {% if generated_quizzes %}
+        <h2>Generated Quizzes</h2>
+        <pre>{{ generated_quizzes }}</pre>
+    {% endif %}
+</body>
+</html>
