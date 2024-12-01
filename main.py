@@ -53,7 +53,7 @@ def process_file(file_path, output_text_file):
 
 if __name__ == "__main__":
     # Path to the file (PDF or image)
-    file_path = 'samples/sqe.PNG'
+    file_path = 'samples/pp.pdf'
 
     # Path to save the extracted text
     output_text_file = "extracted_texts/extracted_text5.txt"

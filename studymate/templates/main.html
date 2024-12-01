@@ -14,12 +14,25 @@
         <label for="text_input">Enter File for Text Extraction:</label>
         <input type="file" id="text_input" name="input_file" accept=".pdf,.png,.jpg,.jpeg">
         <br><br>
-        <button type="submit" class="button">Extract Text</button>
+        <button type="submit" class="button" name="upload_file">Extract Text</button>
     </form>
 
     {% if extracted_text %}
         <h2>Extracted Text</h2>
-        <pre>{{ extracted_text }}</pre>
+        <textarea readonly style="width: 100%; height: 400px;">{{ extracted_text }}</textarea>
+
+        <!-- Generate Quiz Button -->
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="extracted_text" value="{{ extracted_text }}">
+            <button type="submit" class="button" name="generate_quiz">Generate Quizzes</button>
+        </form>
+    {% endif %}
+
+        <!-- Display Generated Quizzes -->
+    {% if generated_quizzes %}
+        <h2>Generated Quizzes</h2>
+        <pre>{{ generated_quizzes }}</pre>
     {% endif %}
 </body>
 </html>

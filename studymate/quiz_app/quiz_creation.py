@@ -170,3 +170,19 @@ def generate_quizzes(page_text):
     quizzes = response.choices[0].message.content.strip()
     
     return quizzes
+
+
+def generate_quizzes_from_text(text, page_size=1000):
+
+    # Split the text into chunks (pages) of a given size
+    pages = [text[i:i+page_size] for i in range(0, len(text), page_size)]
+
+    all_quizzes = []
+
+    # Generate quizzes for each page
+    for i, page in enumerate(pages):
+        print(f"Generating quizzes for page {i+1}...")
+        quizzes = generate_quizzes(page)
+        all_quizzes.append(f"\n{quizzes}\n\n")
+
+    return "".join(all_quizzes)
