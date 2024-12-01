@@ -2,11 +2,119 @@ import os
 import openai
 from dotenv import load_dotenv, find_dotenv
 from together import Together
+from PIL import Image
+from google.cloud import vision
+from pdf2image import convert_from_path
+import io
 
 _ = load_dotenv(find_dotenv())
 
 
-client = Together(api_key=os.environ.get('TOGETHER_API_KEY'))
+llama_client = Together(api_key=os.environ.get('TOGETHER_API_KEY'))
+
+google_credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+
+if google_credentials_path is None:
+    raise ValueError("The environment variable 'GOOGLE_APPLICATION_CREDENTIALS' is not set.")
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = google_credentials_path
+
+def convert_pdf_to_images(pdf_path):
+    try:
+        return convert_from_path(pdf_path)
+    except Exception as e:
+        raise RuntimeError(f"Error converting PDF to images: {e}")
+
+def image_to_byte_array(image):
+    img_byte_arr = io.BytesIO()
+    image.save(img_byte_arr, format='PNG')
+    return img_byte_arr.getvalue()
+
+
+def extract_text_from_image(image_content):
+    # Initialize the Vision API client
+    vision_client = vision.ImageAnnotatorClient()
+
+    # Construct an image instance
+    image = vision.Image(content=image_content)
+
+    # Perform text detection
+    response = vision_client.text_detection(image=image)
+    texts = response.text_annotations
+
+    # Extract the detected text
+    if texts:
+        extracted_text = texts[0].description
+    else:
+        extracted_text = ""
+
+    # Handle possible errors
+    if response.error.message:
+        raise Exception(f'{response.error.message}')
+
+    return extracted_text
+
+
+def correct_grammar_and_context(text):
+    system_prompt = """
+    You are an advanced language model. Your task is to correct the grammar,
+    structure, and spelling of the provided text. Please ensure the output is
+    clean and simple, without any additional commentary or explanations.
+    Do not include phrases like 'Here is the corrected text:' or 'I made the following changes:' etc.
+    """
+
+    response = llama_client.chat.completions.create(
+        model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                    "role": "user",
+                    "content": f"correct and enhance the following the text:\n\n{text}"
+            },
+        ],
+        max_tokens=1000,
+        temperature=0.7,
+        top_p=0.7,
+        top_k=50,
+        repetition_penalty=1,
+        stop=["<|eot_id|>","<|eom_id|>"],
+        stream=False
+    )
+    return response.choices[0].message.content
+
+def process_file(file_path):
+    all_text = ""
+
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File not found: {file_path}")
+    # Check if the file is a PDF or an image
+    if file_path.lower().endswith('.pdf'):
+        # Convert PDF to images
+        images = convert_pdf_to_images(file_path)
+    elif file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
+        # Open the image file
+        images = [Image.open(file_path)]
+    else:
+        raise ValueError("Unsupported file format. Please provide a PDF, PNG, or JPG file.")
+
+    for i, image in enumerate(images):
+        # Convert image to byte array
+        img_byte_arr = image_to_byte_array(image)
+
+        # Extract text from image
+        text = extract_text_from_image(img_byte_arr)
+
+        # Clean the extracted text
+        # text = normalize_text(text)
+        text = correct_grammar_and_context(text)
+
+
+        all_text += f"{text}\n\n"
+
+    return all_text
 
 
 def generate_quizzes(page_text):
@@ -37,7 +145,7 @@ def generate_quizzes(page_text):
     user_prompt = f"Text:\n{page_text}\n\nGenerate 1-5 quizzes based on the meaningful information."
 
     # Make the API call to LLaMA 3 for quiz generation
-    response = client.chat.completions.create(
+    response = llama_client.chat.completions.create(
         model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
         messages=[
             {

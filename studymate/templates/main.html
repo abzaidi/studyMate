@@ -9,17 +9,17 @@
 </head>
 <body>
     <h1>Quiz Generator</h1>
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
-        <label for="text_input">Enter Text for Quiz Generation:</label>
-        <textarea id="text_input" name="input_text" placeholder="Paste your text here..."></textarea>
-        <br>
-        <button type="submit" class="button">Generate Quiz</button>
+        <label for="text_input">Enter File for Text Extraction:</label>
+        <input type="file" id="text_input" name="input_file" accept=".pdf,.png,.jpg,.jpeg">
+        <br><br>
+        <button type="submit" class="button">Extract Text</button>
     </form>
 
-    {% if generated_quizzes %}
-        <h2>Generated Quizzes</h2>
-        <pre>{{ generated_quizzes }}</pre>
+    {% if extracted_text %}
+        <h2>Extracted Text</h2>
+        <pre>{{ extracted_text }}</pre>
     {% endif %}
 </body>
 </html>
