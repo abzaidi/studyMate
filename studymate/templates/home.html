@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/footer.css' %}"> -->
+
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="main.html" class="logo">StudyMate</a>
+        <ul class="nav-links">
+            <li><a href="features.html">Features</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="upload-notes.html">Upload Notes</a></li>
+        </ul>
+        <div class="cta-buttons">
+            <a href="login.html" class="button primary-button">Get Started</a>
+
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to StudyMate !</h1>
+            <p>Join our community of learners and educators with StudyMate, the ultimate platform for creating
+                interactive quizzes and sharing study materials. Enhance your learning experience with our AI-powered
+                platform.</p>
+            <form class="email-signup" id="signup-form">
+                <input type="email" placeholder="Enter your email" class="email-input" required>
+                <button type="submit" class="signup-button">Sign up</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="features-header">
+            <h1>Explore Our Key Features</h1>
+            <p>Discover how StudyMate can transform your learning experience with our innovative features. From creating
+                personalized quizzes to uploading and sharing notes, our platform is designed to enhance your study
+                sessions. Track your progress and engage with interactive tools that make learning both effective and
+                enjoyable.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <img src="{% static "images/quiz-creator.jpeg" %}" alt="AI-Powered Quiz Creator Interface" class="feature-image">
+                <h3>AI-Powered Quiz Creator</h3>
+                <p>Our AI-Powered Quiz Creator allows you to generate quizzes based on your study materials. Enhance
+                    your learning with interactive features.</p>
+                <a href="#learn-more" class="learn-more-btn">Learn More</a>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static "images/note-upload.jpeg" %}" alt="Note Uploading Interface" class="feature-image">
+                <h3>Note Uploading Made Easy</h3>
+                <p>Easily upload and share your notes with our drag and drop feature. Access a library of shared notes
+                    and collaborate with peers to enhance your study sessions.</p>
+                <a href="#learn-more" class="learn-more-btn">Learn More</a>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static "images/progress-tracking.jpeg" %}" alt="Progress Tracking Dashboard" class="feature-image">
+                <h3>AI-Powered Q&A Creator</h3>
+                <p>Create Q&A's for you exams. Stay motivated and see how far you've come in your learning journey.</p>
+                <a href="#learn-more" class="learn-more-btn">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="upload-section">
+        <img src="{% static "images/drag.jpeg" %}" alt="Progress Tracking Dashboard" class="feature-image">
+        <div class="upload-content">
+            <h1>Effortlessly Upload Your Study Notes</h1>
+            <p>With our intuitive drag-and-drop feature, you can easily upload your study notes. Simply drag your files
+                into the designated area and watch them upload in seconds. Enhance your learning by sharing and
+                accessing notes effortlessly.</p>
+            <ul class="features-list">
+                <li>Drag and drop your files to upload</li>
+                <li>Access shared notes from peers</li>
+                <li>Collaborate and enhance your study sessions</li>
+            </ul>
+        </div>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="contact-container">
+            <div class="contact-header">
+                <h1>Get in Touch</h1>
+                <p>We'd love to hear from you! Reach out anytime.</p>
+            </div>
+            <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                    <span class="error-message" id="nameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <span class="error-message" id="emailError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Type your message" required></textarea>
+                    <span class="error-message" id="messageError"></span>
+                </div>
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I accept the Terms</label>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+            </form>
+        </div>
+    </section>
+    {% include 'footer.html' %}
+    <script src="{% static 'js/home.js' %}"></script>
+    <script src="{% static 'js/footer.js' %}"></script>
+</body>
+
+</html>

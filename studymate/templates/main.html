@@ -1,38 +1,88 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Generator</title>
+    <title>StudyMate - Upload Notes</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
 </head>
+
 <body>
-    <h1>Quiz Generator</h1>
-    <form method="post" action="" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="text_input">Enter File for Text Extraction:</label>
-        <input type="file" id="text_input" name="input_file" accept=".pdf,.png,.jpg,.jpeg">
-        <br><br>
-        <button type="submit" class="button" name="upload_file">Extract Text</button>
-    </form>
+    <!-- <nav class="navbar">
+        <div class="nav-container">
+            <a href="main.html" class="logo">StudyMate</a>
+            <div class="nav-links">
+                <a href="features.html">Features</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav> -->
+    {% include 'navbar.html' %}
 
-    {% if extracted_text %}
-        <h2>Extracted Text</h2>
-        <textarea readonly style="width: 100%; height: 400px;">{{ extracted_text }}</textarea>
+    <main class="container">
+        <section class="text-section">
+            <h1>Effortlessly Upload Your Study Notes</h1>
+            <p>Transform your study materials into interactive learning resources. Upload your notes and let our AI
+                generate quizzes and Q&A pairs to enhance your learning experience.</p>
+        </section>
 
-        <!-- Generate Quiz Button -->
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="extracted_text" value="{{ extracted_text }}">
-            <button type="submit" class="button" name="generate_quiz">Generate Quizzes</button>
-        </form>
-    {% endif %}
+        <section class="upload-section">
+            <form method="post" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="upload-box" id="dropZone">
+                    <img src="{% static 'images/upload.png' %}" alt="" class="upload-icon">
+                    <p>Drag and drop your files here</p>
+                    <p class="or-text">or</p>
+                    <input type="file" id="fileInput" class="file-input" name="input_file" accept=".pdf,.png,.jpg,.jpeg">
+                    <label for="fileInput" class="browse-btn">Browse Files</label>
+                    <p class="file-name" id="fileName"></p>
+                </div>
+            
+                <div class="button-group">
+                    <button type="submit" name="upload_file" class="btn btn-primary" id="uploadBtn">Upload File</button>
+                    <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </section>
 
-        <!-- Display Generated Quizzes -->
-    {% if generated_quizzes %}
-        <h2>Generated Quizzes</h2>
-        <pre>{{ generated_quizzes }}</pre>
-    {% endif %}
+        {% if extracted_text %}
+        <section class="extraction-section">
+            <div class="text-box">
+                <textarea id="extractedText" placeholder="Extracted text will appear here..." readonly>{{ extracted_text }}</textarea>
+            </div>
+            <div class="button-group">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="extracted_text" value="{{ extracted_text }}">
+                    <button type="submit" class="btn btn-primary" name="generate_quiz">Generate Quiz</button>
+                    <button type="submit" class="btn btn-primary" name="generate_qa">Generate Q&A</button>
+                </form>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if generated_quizzes %}
+        <section class="quiz-section">
+            <h2>Generated Quizzes</h2>
+            <pre>{{ generated_quizzes }}</pre>
+        </section>
+        {% endif %}
+
+        {% if generated_qna %}
+        <section class="qna-section">
+            <h2>Generated Q&A</h2>
+            <pre>{{ generated_qna }}</pre>
+        </section>
+        {% endif %}
+        
+        <!-- <section><div id="footer-container"></div></section> -->
+    </main>
+    {% include 'footer.html' %}
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/footer.js' %}"></script>
 </body>
 </html>

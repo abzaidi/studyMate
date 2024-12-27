@@ -1,11 +1,12 @@
 from django.shortcuts import render, HttpResponse
 from .quiz_creation import generate_quizzes_from_text, process_file
+from .qna_creation import generate_qna_from_text
 from django.core.files.storage import default_storage
 
 # Create your views here.
 
 def home(request):
-    return HttpResponse("This is the home page!!")
+    return render(request, "home.html")
 
 
 def loginPage(request):
@@ -19,6 +20,7 @@ def registerPage(request):
 def main(request):
     cntx = {}
     generated_quizzes = ""
+    generated_qna = ""
     extracted_text = ""
     if request.method == "POST":
         if "upload_file" in request.POST:
@@ -38,6 +40,12 @@ def main(request):
             if extracted_text:
                 # Generate quizzes from the extracted text
                 generated_quizzes = generate_quizzes_from_text(extracted_text)
+        elif "generate_qa" in request.POST:
+            # Get extracted text from the hidden input
+            extracted_text = request.POST.get("extracted_text", "")
+            if extracted_text:
+                # Generate Q&A pairs from the extracted text
+                generated_qna = generate_qna_from_text(extracted_text)
 
-        cntx = {"extracted_text": extracted_text, "generated_quizzes": generated_quizzes}  # Generate quizzes dynamically
+        cntx = {"extracted_text": extracted_text, "generated_quizzes": generated_quizzes, "generated_qna": generated_qna}  # Generate quizzes dynamically
     return render(request, "main.html", cntx)

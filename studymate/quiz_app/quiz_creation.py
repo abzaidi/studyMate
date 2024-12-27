@@ -60,7 +60,8 @@ def correct_grammar_and_context(text):
     You are an advanced language model. Your task is to correct the grammar,
     structure, and spelling of the provided text. Please ensure the output is
     clean and simple, without any additional commentary or explanations.
-    Do not include phrases like 'Here is the corrected text:' or 'I made the following changes:' etc.
+    Do not include phrases like 'Here is the corrected text:' or 'I made the following changes:' or 
+    'Note: I have made the following changes to the original text: etc.
     """
 
     response = llama_client.chat.completions.create(

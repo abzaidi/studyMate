@@ -1,34 +1,208 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #fff;
 }
-textarea {
-    width: 100%;
-    height: 150px;
-    margin-bottom: 10px;
+
+/* Navbar styles */
+.navbar {
+    border-bottom: 1px solid #eaeaea;
+    padding: 1rem 0;
+    background: white;
 }
-.button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-style: italic;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Main container */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Text section */
+.text-section {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.text-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #2D3748;
+}
+
+.text-section p {
+    color: #666;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Upload section */
+.upload-section {
+    margin-bottom: 2rem;
+}
+
+.upload-box {
+    border: 2px dashed #6C5CE7;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background: #F7FAFC;
+    transition: border-color 0.3s ease;
     cursor: pointer;
 }
-.button:hover {
-    background-color: #0056b3;
+
+.upload-box.drag-over {
+    border-color: #4834d4;
+    background: #EDF2F7;
 }
-.quiz-container {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
+
+.upload-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
 }
-.quiz-question {
-    font-weight: bold;
-    margin-bottom: 5px;
+
+.file-input {
+    display: none;
 }
-.quiz-option {
-    margin-left: 20px;
+
+.browse-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #6C5CE7;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.browse-btn:hover {
+    background: #4834d4;
+}
+
+.or-text {
+    margin: 1rem 0;
+    color: #666;
+}
+
+.file-name {
+    margin-top: 1rem;
+    color: #6C5CE7;
+}
+
+/* Extraction section */
+.text-box {
+    margin-bottom: 1rem;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 1rem;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    resize: none;
+    font-family: inherit;
+    background: #F7FAFC;
+}
+
+/* Button styles */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #6C5CE7;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #4834d4;
+}
+
+.btn-secondary {
+    background: #E2E8F0;
+    color: #4A5568;
+}
+
+.btn-secondary:hover {
+    background: #CBD5E0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .nav-container {
+        padding: 0 1rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .text-section h1 {
+        font-size: 2rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
 }
