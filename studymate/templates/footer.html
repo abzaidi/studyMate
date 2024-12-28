@@ -2,12 +2,12 @@
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-main">
-            <a href="/" class="footer-logo">StudyMate</a>
+            <a href="{% url 'home' %}" class="footer-logo">StudyMate</a>
             
             <ul class="footer-nav">
-                <li><a href="/features">Features</a></li>
-                <li><a href="/about">About Us</a></li>
-                <li><a href="/contact">Contact</a></li>
+                <li><a href="{% url 'features' %}">Features</a></li>
+                <li><a href="{% url 'about' %}">About Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
                 <li><a href="/progress">User Progress</a></li>
             </ul>
 

@@ -13,15 +13,15 @@
 
 <body>
     <nav class="navbar">
-        <a href="main.html" class="logo">StudyMate</a>
+        <a href="{% url 'home' %}" class="logo">StudyMate</a>
         <ul class="nav-links">
-            <li><a href="features.html">Features</a></li>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="upload-notes.html">Upload Notes</a></li>
+            <li><a href="{% url 'features' %}">Features</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            <li><a href="{% url 'main' %}">Upload Notes</a></li>
         </ul>
         <div class="cta-buttons">
-            <a href="login.html" class="button primary-button">Get Started</a>
+            <a href="{% url 'login' %}" class="button primary-button">Get Started</a>
 
         </div>
     </nav>

@@ -1,0 +1,237 @@
+ /* Reset and base styles */
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+}
+
+/* Navbar styles */
+.navbar {
+    border-bottom: 1px solid #eaeaea;
+    padding: 1rem 0;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-style: italic;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #000;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #6C5CE7;
+    color: #6C5CE7;
+}
+
+.btn-outline:hover {
+    background: #f8f8f8;
+}
+
+.btn-primary {
+    background: #6C5CE7;
+    border: 1px solid #6C5CE7;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5A4ED1;
+}
+
+/* Mobile menu button */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.mobile-menu-btn span {
+    width: 24px;
+    height: 2px;
+    background: #000;
+    transition: all 0.3s ease;
+}
+
+/* Main content styles */
+main {
+    padding: 2rem 1rem;
+}
+
+section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1rem;
+    text-align: center;
+}
+
+.team-section {
+    background: #f8f8f8;
+}
+
+h1,
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+section p {
+    max-width: 600px;
+    margin: 0 auto;
+    color: #666;
+}
+
+/* Team Grid styles */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.team-member {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+}
+
+.team-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+}
+
+.team-member h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.team-member h4 {
+    font-size: 1rem;
+    color: #6C5CE7;
+    margin-bottom: 1rem;
+}
+
+.team-member p {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-links a {
+    color: #666;
+    font-size: 1.25rem;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #6C5CE7;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+
+    .nav-links,
+    .nav-buttons {
+        display: none;
+    }
+
+    .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    h1,
+    h2 {
+        font-size: 2rem;
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+
+    .team-member {
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

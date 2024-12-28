@@ -10,11 +10,20 @@ def home(request):
 
 
 def loginPage(request):
-    return HttpResponse("This is the login page!!")
+    return render(request, "login.html")
 
 
 def registerPage(request):
     return HttpResponse("This is the registration page!!")
+
+def features(request):
+    return render(request, "features.html")
+
+def about(request):
+    return render(request, "about.html")
+
+def contact(request):
+    return render(request, "contact.html")
 
 
 def main(request):

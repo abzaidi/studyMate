@@ -11,17 +11,17 @@
 </head>
 
 <body>
-    <!-- <nav class="navbar">
+    <nav class="navbar">
         <div class="nav-container">
-            <a href="main.html" class="logo">StudyMate</a>
+            <a href="{% url 'home' %}" class="logo">StudyMate</a>
             <div class="nav-links">
-                <a href="features.html">Features</a>
-                <a href="about.html">About Us</a>
-                <a href="contact.html">Contact</a>
+                <a href="{% url 'features' %}">Features</a>
+                <a href="{% url 'about' %}">About Us</a>
+                <a href="{% url 'contact' %}">Contact</a>
             </div>
         </div>
-    </nav> -->
-    {% include 'navbar.html' %}
+    </nav>
+
 
     <main class="container">
         <section class="text-section">
@@ -43,7 +43,7 @@
                 </div>
             
                 <div class="button-group">
-                    <button type="submit" name="upload_file" class="btn btn-primary" id="uploadBtn">Upload File</button>
+                    <button type="submit" name="upload_file" class="btn btn-primary" id="uploadBtn">Extract Text</button>
                     <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
                 </div>
             </form>

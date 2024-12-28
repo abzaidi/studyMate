@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate Features - Interactive Learning Platform</title>
+    <link rel="stylesheet" href="{% static 'css/features.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    <style>
+        
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">StudyMate</a>
+        <ul class="nav-links">
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            <li><a href="{% url 'main' %}">Upload Notes</a></li>
+        </ul>
+    </nav>
+
+
+    <section class="features">
+        <div class="container">
+            <div class="features-header">
+                <h1>Explore StudyMate's Innovative Features</h1>
+                <p>Discover how StudyMate revolutionizes learning with its AI-powered quiz creator, interactive quizzes,
+                    and seamless note uploading. Our platform is designed to enhance your educational experience,
+                    offering tools that track progress and encourage collaboration. Dive into the features that make
+                    StudyMate a leader in educational technology.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="feature-image">
+                        <img src="{% static 'images/timer.jpg' %}" alt="Students participating in interactive quiz" loading="lazy">
+                    </div>
+                    <h2>Interactive Quizzes with Timers</h2>
+                    <p>Our quizzes are designed to challenge and engage students, featuring timers and score tracking to
+                        enhance the learning experience. Perfect for self-assessment and knowledge reinforcement.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-image">
+                        <img src="{% static 'images/seems.jpg' %}" alt="Student uploading notes" loading="lazy">
+                    </div>
+                    <h2>Seamless Note Uploading</h2>
+                    <p>Easily upload and organize your study materials with our drag-and-drop feature. This tool
+                        simplifies resource sharing and collaboration among students.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-image">
+                        <img src="{% static 'images/enhance.jpg' %}" alt="Learning progress graph" loading="lazy">
+                    </div>
+                    <h2>Generate Question & Answers</h2>
+                    <p>Enhance your exam preparation. Stay
+                        motivated and informed about your learning journey with StudyMate.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="features-header">
+            <h1>Explore Our Key Features</h1>
+            <p>Discover how StudyMate can transform your learning experience with our innovative features. From creating
+                personalized quizzes to uploading and sharing notes, our platform is designed to enhance your study
+                sessions. Track your progress and engage with interactive tools that make learning both effective and
+                enjoyable.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <img src="{% static 'images/quiz-creator.jpeg' %}" alt="AI-Powered Quiz Creator Interface" class="feature-image">
+                <h3>AI-Powered Quiz Creator</h3>
+                <p>Our AI-Powered Quiz Creator allows you to generate quizzes based on your study materials. Enhance
+                    your learning with interactive features.</p>
+                <a href="#learn-more" class="learn-more-btn">Learn More</a>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/note-upload.jpeg' %}" alt="Note Uploading Interface" class="feature-image">
+                <h3>Note Uploading Made Easy</h3>
+                <p>Easily upload and share your notes with our drag and drop feature. Access a library of shared notes
+                    and collaborate with peers to enhance your study sessions.</p>
+                <a href="#learn-more" class="learn-more-btn">Learn More</a>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/progress-tracking.jpeg' %}" alt="Progress Tracking Dashboard" class="feature-image">
+                <h3>AI-Powered Q&A Creator</h3>
+                <p>Create Q&A's for you exams. Stay motivated
+                    and see how far you've come in your learning journey.</p>
+                <a href="#learn-more" class="learn-more-btn">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section><div id="footer-container"></div></section> -->
+    {% include 'footer.html' %}
+    <script src="{% static 'js/features.js' %}"></script>
+    <script src="{% static 'js/footer.js' %}"></script>
+</body>
+
+</html>
