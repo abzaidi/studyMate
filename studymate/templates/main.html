@@ -68,14 +68,18 @@
         {% if generated_quizzes %}
         <section class="quiz-section">
             <h2>Generated Quizzes</h2>
-            <pre>{{ generated_quizzes }}</pre>
+            <div class="quiz-box">
+                <pre class="styled-pre">{{ generated_quizzes }}</pre>
+            </div>
         </section>
         {% endif %}
 
         {% if generated_qna %}
         <section class="qna-section">
             <h2>Generated Q&A</h2>
-            <pre>{{ generated_qna }}</pre>
+            <div class="qna-box">
+                <pre class="styled-pre">{{ generated_qna }}</pre>
+            </div>
         </section>
         {% endif %}
         
