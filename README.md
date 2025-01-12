@@ -7,7 +7,6 @@ StudyMate aims to enhance academic preparation with minimal effort and
 maximum accuracy.
 
 
-![Logo](https://i.imgur.com/kqk8Bzc.jpeg)
 
 
 ## Features
