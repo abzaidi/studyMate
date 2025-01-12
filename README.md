@@ -26,3 +26,8 @@ maximum accuracy.
 
 **APIs:** Llama 3.1 by TogetherAI, Google Vision OCR
 
+
+
+## Architecture
+
+![Logo](https://i.imgur.com/366E7jo.png)
