@@ -26,8 +26,65 @@ maximum accuracy.
 
 **APIs:** Llama 3.1 by TogetherAI, Google Vision OCR
 
-
-
 ## Architecture
 
 ![Logo](https://i.imgur.com/366E7jo.png)
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/abzaidi/studyMate.git
+```
+
+Go to the project directory
+
+```bash
+  cd studymate
+```
+
+Set up and activate virtual environment
+
+```bash
+  python -m venv venv
+  venv\Scripts\activate
+```
+
+Install dependencies
+
+```bash
+  pip install -r requirements.txt
+```
+
+Set up environment variables:
+
+- Create a .env file in the project root directory.
+
+- Enable Google Vision API in Google Cloud Console and generate the JSON API key file using a service account and place that file in the root directory of the project.
+
+- Add the necessary environment variables, such as TOGETHER_API_KEY and GOOGLE_APPLICATION_CREDENTIALS.
+
+- Install Poppler and include its bin folder file path to the system environment variables.
+
+Go to the project django directory
+
+```bash
+  cd studymate
+```
+Apply database migrations
+
+```bash
+  python manage.py migrate
+```
+
+Run the development server
+
+```bash
+  python manage.py runserver
+```
+
+Access the application
+
+- Open a web browser and go to http://127.0.0.1:8000.
+
