@@ -65,6 +65,11 @@ Set up environment variables:
 
 - Add the necessary environment variables, such as TOGETHER_API_KEY and GOOGLE_APPLICATION_CREDENTIALS.
 
+```bash
+  GOOGLE_APPLICATION_CREDENTIALS=F:/Path/To/Your/Vision/API/Key/File
+  TOGETHER_API_KEY = abcdefgijklmnopqrstuvwxyz
+```
+
 - Install Poppler and include its bin folder file path to the system environment variables.
 
 Go to the project django directory
