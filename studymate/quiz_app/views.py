@@ -1,33 +1,70 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from .quiz_creation import generate_quizzes_from_text, process_file
 from .qna_creation import generate_qna_from_text
 from django.core.files.storage import default_storage
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 
 def home(request):
-    return render(request, "home.html")
+    context = {'page': 'home'}
+    return render(request, "home.html", context)
 
 
 def loginPage(request):
-    return render(request, "login.html")
+
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+        except:
+            messages.error(request, "User does not exists.")
+        
+        user = authenticate(request, email=email, password=password)
+
+        if user:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, "email or password is incorrect.")
+
+    context = {'page': 'login'}
+    return render(request, "login.html", context)
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
 
 
 def registerPage(request):
-    return HttpResponse("This is the registration page!!")
+    context = {'page': 'register'}
+    return render(request, "login.html", context)
 
 def features(request):
-    return render(request, "features.html")
+    context = {'page': 'features'}
+    return render(request, "features.html", context)
 
 def about(request):
-    return render(request, "about.html")
+    context = {'page': 'about'}
+    return render(request, "about.html", context)
 
 def contact(request):
-    return render(request, "contact.html")
+    context = {'page': 'contact'}
+    return render(request, "contact.html", context)
 
-
+@login_required(login_url='login')
 def main(request):
-    cntx = {}
+    cntx = {'page': 'main'}
     generated_quizzes = ""
     generated_qna = ""
     extracted_text = ""
@@ -56,5 +93,8 @@ def main(request):
                 # Generate Q&A pairs from the extracted text
                 generated_qna = generate_qna_from_text(extracted_text)
 
-        cntx = {"extracted_text": extracted_text, "generated_quizzes": generated_quizzes, "generated_qna": generated_qna}  # Generate quizzes dynamically
+        cntx.update({"extracted_text": extracted_text, 
+                "generated_quizzes": generated_quizzes, 
+                "generated_qna": generated_qna
+                })  # Generate quizzes dynamically
     return render(request, "main.html", cntx)

@@ -50,6 +50,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Keep the default backend
+    'quiz_app.backends.EmailBackend',  # Add your custom backend
+]
+
 ROOT_URLCONF = 'studymate.urls'
 
 TEMPLATES = [

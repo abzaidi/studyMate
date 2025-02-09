@@ -1,13 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMate - Contact Us</title>
-    <link rel="stylesheet" href="{% static 'css/contact.css' %}">
-    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
-</head>
+{% extends 'start.html' %}
+
+{% block content %}
 <body>
     <nav class="navbar">
         <a href="{% url 'home' %}" class="logo">StudyMate</a>
@@ -53,4 +46,6 @@
     <script src="{% static 'js/contact.js' %}"></script>
     <script src="{% static 'js/footer.js' %}"></script>
 </body>
+
+{% endblock %}
 </html>

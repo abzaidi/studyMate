@@ -1,15 +1,7 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'start.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMate - Upload Notes</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
-</head>
 
+{% block content %}
 <body>
     <nav class="navbar">
         <div class="nav-container">
@@ -89,4 +81,6 @@
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/footer.js' %}"></script>
 </body>
+
+{% endblock %}
 </html>

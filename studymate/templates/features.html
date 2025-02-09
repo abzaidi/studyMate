@@ -1,18 +1,7 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'start.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMate Features - Interactive Learning Platform</title>
-    <link rel="stylesheet" href="{% static 'css/features.css' %}">
-    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
-    <style>
-        
-    </style>
-</head>
 
+{% block content %}
 <body>
     <nav class="navbar">
         <a href="{% url 'home' %}" class="logo">StudyMate</a>
@@ -107,4 +96,6 @@
     <script src="{% static 'js/footer.js' %}"></script>
 </body>
 
+
+{% endblock %}
 </html>
