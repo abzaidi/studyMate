@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,7 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'quiz_app.apps.QuizAppConfig',
+
 ]
+
+AUTH_USER_MODEL = 'quiz_app.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,8 +58,8 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    'quiz_app.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',  # Keep the default backend
-    'quiz_app.backends.EmailBackend',  # Add your custom backend
 ]
 
 ROOT_URLCONF = 'studymate.urls'

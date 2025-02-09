@@ -1,5 +1,5 @@
 {% extends 'start.html' %}
-
+{% load static %}
 
 {% block content %}
 
@@ -45,7 +45,7 @@
 
         <div class="features-grid">
             <div class="feature-card">
-                <img src="{% static "images/quiz-creator.jpeg" %}" alt="AI-Powered Quiz Creator Interface" class="feature-image">
+                <img src="{% static 'images/quiz-creator.jpeg' %}" alt="AI-Powered Quiz Creator Interface" class="feature-image">
                 <h3>AI-Powered Quiz Creator</h3>
                 <p>Our AI-Powered Quiz Creator allows you to generate quizzes based on your study materials. Enhance
                     your learning with interactive features.</p>
@@ -53,7 +53,7 @@
             </div>
 
             <div class="feature-card">
-                <img src="{% static "images/note-upload.jpeg" %}" alt="Note Uploading Interface" class="feature-image">
+                <img src="{% static 'images/note-upload.jpeg' %}" alt="Note Uploading Interface" class="feature-image">
                 <h3>Note Uploading Made Easy</h3>
                 <p>Easily upload and share your notes with our drag and drop feature. Access a library of shared notes
                     and collaborate with peers to enhance your study sessions.</p>
@@ -61,7 +61,7 @@
             </div>
 
             <div class="feature-card">
-                <img src="{% static "images/progress-tracking.jpeg" %}" alt="Progress Tracking Dashboard" class="feature-image">
+                <img src="{% static 'images/progress-tracking.jpeg' %}" alt="Progress Tracking Dashboard" class="feature-image">
                 <h3>AI-Powered Q&A Creator</h3>
                 <p>Create Q&A's for you exams. Stay motivated and see how far you've come in your learning journey.</p>
                 <a href="#learn-more" class="learn-more-btn">Learn More</a>
@@ -70,7 +70,7 @@
     </section>
 
     <section class="upload-section">
-        <img src="{% static "images/drag.jpeg" %}" alt="Progress Tracking Dashboard" class="feature-image">
+        <img src="{% static 'images/drag.jpeg' %}" alt="Progress Tracking Dashboard" class="feature-image">
         <div class="upload-content">
             <h1>Effortlessly Upload Your Study Notes</h1>
             <p>With our intuitive drag-and-drop feature, you can easily upload your study notes. Simply drag your files

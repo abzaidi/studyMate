@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+from .models import User
+from .forms import MyUserCreationForm
 
 # Create your views here.
 
@@ -21,7 +23,7 @@ def loginPage(request):
         return redirect('home')
 
     if request.method == 'POST':
-        email = request.POST.get('email')
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
         try:
@@ -46,9 +48,43 @@ def logoutUser(request):
     return redirect('login')
 
 
+# def registerPage(request):
+#     form = MyUserCreationForm()
+#     if request.method == 'POST':
+#         form = MyUserCreationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.email = user.email.lower()
+#             user.save()
+#             login(request, user)
+#             return redirect('home')
+#         else:
+#             messages.error(request, "An error occurred during registration.")
+
+#     context = {'form': form}
+#     return render(request, "login.html", context)
+
 def registerPage(request):
-    context = {'page': 'register'}
-    return render(request, "login.html", context)
+    if request.method == 'POST':
+        form = MyUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.email = user.email.lower()
+            user.save()
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                # Specify the custom EmailBackend explicitly
+                login(request, user, backend='quiz_app.backends.EmailBackend')
+                return redirect('home')
+        else:
+            messages.error(request, "An error occurred during registration.")
+    else:
+        form = MyUserCreationForm()
+    context = {'form': form}
+    return render(request, 'login.html', context)
+
 
 def features(request):
     context = {'page': 'features'}
