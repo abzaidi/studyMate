@@ -62,6 +62,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Keep the default backend
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 ROOT_URLCONF = 'studymate.urls'
 
 TEMPLATES = [
@@ -111,6 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# filepath: /f:/Coding Projects/python/studyMate/studymate/studymate/settings.py
 
 
 # Internationalization

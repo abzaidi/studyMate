@@ -2,15 +2,14 @@
 {% load static %}
 
 {% block content %}
-<body>
-    <nav class="navbar">
+    <!-- <nav class="navbar">
         <a href="{% url 'home' %}" class="logo">StudyMate</a>
         <ul class="nav-links">
             <li><a href="{% url 'about' %}">About Us</a></li>
             <li><a href="{% url 'contact' %}">Contact</a></li>
             <li><a href="{% url 'main' %}">Upload Notes</a></li>
         </ul>
-    </nav>
+    </nav> -->
 
 
     <section class="features">
@@ -94,8 +93,6 @@
     {% include 'footer.html' %}
     <script src="{% static 'js/features.js' %}"></script>
     <script src="{% static 'js/footer.js' %}"></script>
-</body>
 
 
 {% endblock %}
-</html>

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 
 from .models import User
 from .forms import MyUserCreationForm
@@ -134,3 +135,26 @@ def main(request):
                 "generated_qna": generated_qna
                 })  # Generate quizzes dynamically
     return render(request, "main.html", cntx)
+
+
+
+def send_email(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        terms = request.POST.get('terms')
+
+        if terms:
+            send_mail(
+                f'Message from {name}',
+                message,
+                email,
+                ['abubakar.zaidi03@gmail.com'],  # replace with your email
+                fail_silently=False,
+            )
+            messages.success(request, "Email sent successfully.")
+            return redirect('home')
+        else:
+            messages.error(request, "Please accept the terms and conditions.")
+    return HttpResponse('Failed to send email')

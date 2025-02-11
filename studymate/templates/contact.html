@@ -2,15 +2,14 @@
 {% load static %}
 
 {% block content %}
-<body>
-    <nav class="navbar">
+    <!-- <nav class="navbar">
         <a href="{% url 'home' %}" class="logo">StudyMate</a>
         <ul class="nav-links">
             <li><a href="{% url 'features' %}">Features</a></li>
             <li><a href="{% url 'about' %}">About Us</a></li>
             <li><a href="{% url 'main' %}">Upload Notes</a></li>
         </ul>
-    </nav>
+    </nav> -->
 
     <section class="contact-section">
         <div class="contact-container">
@@ -18,7 +17,8 @@
                 <h1>Get in Touch</h1>
                 <p>We'd love to hear from you! Reach out anytime.</p>
             </div>
-            <form id="contactForm" class="contact-form">
+            <form id="contactForm" class="contact-form" method="POST" action="{% url 'send_email' %}">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" placeholder="Enter your name" required>
@@ -44,9 +44,7 @@
     </section>
     <!-- <section><div id="footer-container"></div></section> -->
     {% include 'footer.html' %}
-    <script src="{% static 'js/contact.js' %}"></script>
+    <!-- <script src="{% static 'js/contact.js' %}"></script> -->
     <script src="{% static 'js/footer.js' %}"></script>
-</body>
 
 {% endblock %}
-</html>

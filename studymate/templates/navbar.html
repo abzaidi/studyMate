@@ -1,11 +1,44 @@
 {% load static %}
+
+{% if page == 'home' %}
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="logo">StudyMate</a>
+    <ul class="nav-links">
+        <li><a href="{% url 'features' %}">Features</a></li>
+        <li><a href="{% url 'about' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+        <li><a href="{% url 'main' %}">Upload Notes</a></li>
+    </ul>
+    <div class="cta-buttons">
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="button primary-button">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="button primary-button">Get Started</a>
+        {% endif %}
+    </div>
+</nav>
+{% elif page == 'features' or page == 'contact' %}
+
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="logo">StudyMate</a>
+    <ul class="nav-links">
+        <li><a href="{% url 'features' %}">Features</a></li>
+        <li><a href="{% url 'about' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+        <li><a href="{% url 'main' %}">Upload Notes</a></li>
+    </ul>
+</nav>
+
+{% else %}
 <nav class="navbar">
     <div class="nav-container">
-        <a href="main.html" class="logo">StudyMate</a>
+        <a href="{% url 'home' %}" class="logo">StudyMate</a>
         <div class="nav-links">
-            <a href="features.html">Features</a>
-            <a href="about.html">About Us</a>
-            <a href="contact.html">Contact</a>
+            <a href="{% url 'features' %}">Features</a>
+            <a href="{% url 'about' %}">About Us</a>
+            <a href="{% url 'contact' %}">Contact</a>
+            <a href="{% url 'main' %}">Upload Notes</a>
         </div>
     </div>
 </nav>
+{% endif %}
