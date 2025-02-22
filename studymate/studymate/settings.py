@@ -12,6 +12,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+
+GOOGLE_CLOUD_PROJECT_ID = "my-project-64178-1701002322524"
+GOOGLE_CLOUD_STORAGE_BUCKET = "save-notes-to-cloud"
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
