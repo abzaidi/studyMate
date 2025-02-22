@@ -8,8 +8,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 
-from .models import User
+from .models import User, ExtractedText
 from .forms import MyUserCreationForm
+from .utils import upload_to_gcs, fetch_text_from_gcs
 
 # Create your views here.
 
@@ -105,6 +106,7 @@ def main(request):
     generated_quizzes = ""
     generated_qna = ""
     extracted_text = ""
+    gcs_url = None
     if request.method == "POST":
         if "upload_file" in request.POST:
             input_file = request.FILES.get("input_file")  # Get the input text from the form
@@ -115,6 +117,10 @@ def main(request):
                 absolute_path = default_storage.path(file_path)
                 # Process the file to extract text
                 extracted_text = process_file(absolute_path)
+                # Upload the extracted text to Google Cloud Storage
+                gcs_url = upload_to_gcs(input_file.name, extracted_text)
+                # Save the fine name and its GCS URL to the database
+                ExtractedText.objects.create(user=request.user, file_name=input_file.name, gcs_url=gcs_url)
                 # Clean up the temporary file
                 default_storage.delete(file_path)
         elif "generate_quiz" in request.POST:
@@ -129,13 +135,30 @@ def main(request):
             if extracted_text:
                 # Generate Q&A pairs from the extracted text
                 generated_qna = generate_qna_from_text(extracted_text)
+        
+    if gcs_url:
+        extracted_text = fetch_text_from_gcs(gcs_url)
 
-        cntx.update({"extracted_text": extracted_text, 
-                "generated_quizzes": generated_quizzes, 
-                "generated_qna": generated_qna
-                })  # Generate quizzes dynamically
+    cntx.update({"extracted_text": extracted_text, 
+            "generated_quizzes": generated_quizzes, 
+            "generated_qna": generated_qna,
+            })  # Generate quizzes dynamically
     return render(request, "main.html", cntx)
 
+
+@login_required
+def user_extracted_texts(request):
+    extracted_texts = ExtractedText.objects.filter(user=request.user)
+
+    for text_entry in extracted_texts:
+        try:
+            text_entry.extracted_text = fetch_text_from_gcs(text_entry.gcs_url)  # Now it contains only the object path
+        except FileNotFoundError:
+            text_entry.extracted_text = "[Error: File not found in Google Cloud Storage]" # Retrieve text
+
+    return render(request, "saved_texts.html", {
+        "extracted_texts": extracted_texts
+    })
 
 
 def send_email(request):

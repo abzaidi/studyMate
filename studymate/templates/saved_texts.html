@@ -1,0 +1,21 @@
+{% extends 'start.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<h2>Your Saved Extracted Texts</h2>
+<ul>
+    {% for text in extracted_texts %}
+        <li>
+            <strong>{{ text.file_name }}</strong> - Uploaded on {{ text.uploaded_at }}
+            <br>
+            <textarea rows="10" cols="80" readonly>{{ text.extracted_text }}</textarea>
+        </li>
+    {% endfor %}
+</ul>
+
+
+
+
+{% endblock %}

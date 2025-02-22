@@ -37,3 +37,14 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+
+class ExtractedText(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Links text to a user
+    file_name = models.CharField(max_length=255)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    gcs_url = models.URLField()  # Google Cloud Storage link
+
+    def __str__(self):
+        return self.file_name

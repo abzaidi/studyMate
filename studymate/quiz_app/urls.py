@@ -11,5 +11,6 @@ urlpatterns = [
     path("logout/", views.logoutUser, name="logout"),
     path("register/", views.registerPage, name="register"),
     path("main/", views.main, name="main"),
+    path("saved_texts/", views.user_extracted_texts, name="saved_texts"),
     path('send_email/', views.send_email, name='send_email'),
 ]
