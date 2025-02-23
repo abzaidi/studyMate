@@ -2,14 +2,6 @@
 {% load static %}
 
 {% block content %}
-    <!-- <nav class="navbar">
-        <a href="{% url 'home' %}" class="logo">StudyMate</a>
-        <ul class="nav-links">
-            <li><a href="{% url 'features' %}">Features</a></li>
-            <li><a href="{% url 'about' %}">About Us</a></li>
-            <li><a href="{% url 'main' %}">Upload Notes</a></li>
-        </ul>
-    </nav> -->
 
     <section class="contact-section">
         <div class="contact-container">
@@ -44,7 +36,7 @@
     </section>
     <!-- <section><div id="footer-container"></div></section> -->
     {% include 'footer.html' %}
-    <!-- <script src="{% static 'js/contact.js' %}"></script> -->
-    <script src="{% static 'js/footer.js' %}"></script>
+    <script src="{% static 'js/contact.js' %}?v=1"></script>
+    <script src="{% static 'js/footer.js' %}?v=1"></script>
 
 {% endblock %}
