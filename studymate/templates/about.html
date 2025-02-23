@@ -2,19 +2,6 @@
 {% load static %}
 
 {% block content %}
-
-    <!-- <nav class="navbar">
-        <div class="nav-container">
-            <a href="{% url 'home' %}" class="logo">StudyMate</a>
-
-            <div class="nav-links">
-                <a href="{% url 'features' %}">Features</a>
-                <a href="{% url 'contact' %}">Contact</a>
-                <a href="{% url 'main' %}">Upload Notes</a>
-            </div>
-        </div>
-    </nav> -->
-
     <main>
         <section class="mission-section">
             <h1>Our Mission & Vision</h1>
@@ -53,7 +40,7 @@
         <!-- <section><div id="footer-container"></div></section> -->
     </main>
     {% include 'footer.html' %}
-    <script src="{% static 'js/about.js' %}"></script>
-    <script src="{% static 'js/footer.js' %}"></script>
+    <script src="{% static 'js/about.js' %}?v=1"></script>
+    <script src="{% static 'js/footer.js' %}?v=1"></script>
 
 {% endblock %}

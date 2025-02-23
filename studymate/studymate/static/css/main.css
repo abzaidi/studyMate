@@ -1,5 +1,5 @@
 /* Reset and base styles */
-* {
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -12,20 +12,19 @@ body {
     background-color: #fff;
 }
 
-/* Navbar styles */
-.navbar {
-    border-bottom: 1px solid #eaeaea;
-    padding: 1rem 0;
-    background: white;
-}
 
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+/* Navbar styles */
+/* Navigation styles (kept consistent with main page) */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem 5%;
+    position: fixed;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
 }
 
 .logo {
@@ -34,11 +33,6 @@ body {
     font-weight: bold;
     color: #333;
     text-decoration: none;
-}
-
-.nav-links {
-    display: flex;
-    gap: 2rem;
 }
 
 .nav-links {
@@ -58,6 +52,7 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
+    margin-top: 80px;
 }
 
 /* Text section */
@@ -207,9 +202,9 @@ textarea {
 
 /* Responsive design */
 @media (max-width: 768px) {
-    .nav-container {
+    /* .nav-container {
         padding: 0 1rem;
-    }
+    } */
 
     .container {
         padding: 1rem;
@@ -225,5 +220,66 @@ textarea {
 
     .btn {
         width: 100%;
+    }
+}
+
+
+/* Hamburger menu icon */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px 0;
+    background-color: #333;
+    transition: all 0.3s ease;
+}
+
+/* Mobile menu styles */
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Update existing media query */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    /* Hamburger animation classes */
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
     }
 }
