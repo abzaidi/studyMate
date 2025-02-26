@@ -88,6 +88,10 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Please upload and process a file first.');
         }
     });
+    extractedText.addEventListener('input', updateWordCount);
+
+    // Initial word count update
+    updateWordCount();
 });
 
 fetch('footer.html')
@@ -95,6 +99,7 @@ fetch('footer.html')
   .then(html => {
     document.getElementById('footer-container').innerHTML = html;
   });
+
 
 
 
@@ -157,3 +162,19 @@ fetch('footer.html')
 
   // Initialize navigation state
   updateNavigation();
+
+
+  const dropZone = document.getElementById('dropZone');
+
+  // Drag and drop functionality
+  dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#7C3AED';
+      dropZone.style.backgroundColor = '#F5F3FF';
+  });
+
+  dropZone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#E5E7EB';
+      dropZone.style.backgroundColor = '#F9FAFB';
+  });

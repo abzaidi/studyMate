@@ -1,12 +1,12 @@
 // Form submission handling
-document.getElementById('signup-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const email = e.target.querySelector('input[type="email"]').value;
-    // Add your form submission logic here
-    console.log('Form submitted with email:', email);
-    alert('Thank you for signing up! We will be in touch soon.');
-    e.target.reset();
-});
+// document.getElementById('signup-form').addEventListener('submit', function(e) {
+//     e.preventDefault();
+//     const email = e.target.querySelector('input[type="email"]').value;
+//     // Add your form submission logic here
+//     console.log('Form submitted with email:', email);
+//     alert('Thank you for signing up! We will be in touch soon.');
+//     e.target.reset();
+// });
 
 // Navbar scroll effect
 window.addEventListener('scroll', function() {

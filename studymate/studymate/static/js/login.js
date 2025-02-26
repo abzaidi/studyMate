@@ -100,3 +100,12 @@
 // //   .then(html => {
 // //     document.getElementById('footer-container').innerHTML = html;
 // //   });
+
+
+    // Extract email from the URL
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email");
+    
+    if (email) {
+        document.getElementById("email").value = email;
+    }

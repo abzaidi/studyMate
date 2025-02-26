@@ -144,6 +144,72 @@ textarea {
     background: #F7FAFC;
 }
 
+
+.extracted-text-container {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05),
+                0 10px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.text-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #E5E7EB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.text-header h2 {
+    color: #1F2937;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.word-count {
+    color: #6B7280;
+    font-size: 0.875rem;
+}
+
+.extracted-text {
+    min-height: 300px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #1F2937;
+    background-color: #FFFFFF;
+    border: none;
+    width: 100%;
+    resize: vertical;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.extracted-text:focus {
+    outline: none;
+}
+
+.extracted-text::-webkit-scrollbar {
+    width: 8px;
+}
+
+.extracted-text::-webkit-scrollbar-track {
+    background: #F3F4F6;
+    border-radius: 4px;
+}
+
+.extracted-text::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+
+.extracted-text::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}
+
 /* Button styles */
 .button-group {
     display: flex;
