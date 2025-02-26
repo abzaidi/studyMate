@@ -10,8 +10,8 @@
         <p>Join our community of learners and educators with StudyMate, the ultimate platform for creating
             interactive quizzes and sharing study materials. Enhance your learning experience with our AI-powered
             platform.</p>
-        <form class="email-signup {% if request.user.is_authenticated %}hidden{% endif %}" id="signup-form">
-            <input type="email" placeholder="Enter your email" class="email-input" required>
+        <form action="{% url 'redirect_to_register' %}" method="GET" class="email-signup {% if request.user.is_authenticated %}hidden{% endif %}">
+            <input type="email" name="email" placeholder="Enter your email" class="email-input" required>
             <button type="submit" class="signup-button">Sign up</button>
         </form>
     </div>
@@ -100,7 +100,8 @@
     </div>
 </section>
 {% include 'footer.html' %}
-<script src="{% static 'js/home.js' %}"></script>
+
+<script src="{% static 'js/home.js' %}?v=2"></script>
 <script src="{% static 'js/footer.js' %}?v=1"></script>
 
 {% endblock %}

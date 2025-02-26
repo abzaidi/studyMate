@@ -19,6 +19,12 @@ def home(request):
     return render(request, "home.html", context)
 
 
+def redirect_to_register(request):
+    email = request.GET.get("email", "")
+    if email:
+        return redirect(f"/register/?email={email}")
+    return redirect("register") 
+
 def loginPage(request):
 
     if request.user.is_authenticated:
@@ -67,6 +73,7 @@ def logoutUser(request):
 #     return render(request, "login.html", context)
 
 def registerPage(request):
+    email_prefill = request.GET.get("email", "") 
     if request.method == 'POST':
         form = MyUserCreationForm(request.POST)
         if form.is_valid():
@@ -83,7 +90,7 @@ def registerPage(request):
         else:
             messages.error(request, "An error occurred during registration.")
     else:
-        form = MyUserCreationForm()
+        form = MyUserCreationForm(initial={"email": email_prefill})
     context = {'form': form}
     return render(request, 'login.html', context)
 
