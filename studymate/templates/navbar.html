@@ -9,13 +9,29 @@
         <li><a href="{% url 'contact' %}">Contact</a></li>
         <li><a href="{% url 'main' %}">Upload Notes</a></li>
     </ul>
-    <div class="cta-buttons">
-        {% if request.user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="button primary-button">Logout</a>
-        {% else %}
-        <a href="{% url 'login' %}" class="button primary-button">Get Started</a>
-        {% endif %}
+    {% if request.user.is_authenticated %}
+
+    <div class="nav-container" id="navContainer">
+        <!-- This button shows when user is not logged in -->
+        <!-- <button class="get-started-btn" id="getStartedBtn">Get Started</button> -->
+    
+        <!-- This button and dropdown show when user is logged in -->
+        <button class="user-btn" id="userBtn">
+            User Account
+        </button>
+        <div class="dropdown-content" id="dropdownContent">
+            <a href="/profile">User Profile</a>
+            <a href="{% url 'main' %}">Upload Notes</a>
+            <a href="/progress">User Progress</a>
+            <a href="/content">Uploaded Content</a>
+            <a href="{% url 'logout' %}" id="logoutBtn">Log Out</a>
+        </div>
     </div>
+    {% else %}
+    <div class="cta-buttons"> 
+        <a href="{% url 'login' %}" class="button primary-button">Get Started</a>
+    </div>
+    {% endif %}
 </nav>
 {% elif page == 'features' or page == 'contact' %}
 
@@ -34,7 +50,7 @@
     </ul>
 </nav>
 
-{% else %}
+{% elif page == 'about' %}
 <nav class="navbar">
     <a href="{% url 'home' %}" class="logo">StudyMate</a>
     <div class="hamburger">
@@ -49,4 +65,28 @@
         <li><a href="{% url 'main' %}">Upload Notes</a></li>
     </ul>
 </nav>
+
+{% else %}
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="logo">StudyMate</a>
+    <div class="nav-container" id="navContainer">
+        <!-- This button shows when user is not logged in -->
+        <!-- <button class="get-started-btn" id="getStartedBtn">Get Started</button> -->
+    
+        <!-- This button and dropdown show when user is logged in -->
+        <button class="user-btn" id="userBtn">
+            User Account
+        </button>
+        <div class="dropdown-content" id="dropdownContent">
+            <a href="/profile">User Profile</a>
+            <a href="{% url 'main' %}">Upload Notes</a>
+            <a href="/progress">User Progress</a>
+            <a href="/content">Uploaded Content</a>
+            <a href="{% url 'logout' %}" id="logoutBtn">Log Out</a>
+        </div>
+    </div>
+</nav>
+
+
+
 {% endif %}

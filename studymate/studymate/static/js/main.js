@@ -98,28 +98,62 @@ fetch('footer.html')
 
 
 
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
+  const navContainer = document.getElementById('navContainer');
+  const getStartedBtn = document.getElementById('getStartedBtn');
+  const userBtn = document.getElementById('userBtn');
+  const dropdownContent = document.getElementById('dropdownContent');
 
-hamburger.addEventListener('click', () => {
-    // Toggle active class for hamburger animation
-    hamburger.classList.toggle('active');
-    // Toggle nav links visibility
-    navLinks.classList.toggle('active');
-});
+  // Function to simulate checking if user is logged in
+  function isUserLoggedIn() {
+      // Replace this with your actual authentication check
+      return localStorage.getItem('isLoggedIn') === 'true';
+  }
 
-// Close mobile menu when clicking outside
-document.addEventListener('click', (e) => {
-    if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
-        hamburger.classList.remove('active');
-        navLinks.classList.remove('active');
-    }
-});
+  // Function to update button visibility based on login state
+  function updateNavigation() {
+      if (isUserLoggedIn()) {
+          getStartedBtn.style.display = 'none';
+          userBtn.style.display = 'flex';
+      } else {
+          getStartedBtn.style.display = 'block';
+          userBtn.style.display = 'none';
+          dropdownContent.classList.remove('show');
+      }
+  }
 
-// Close mobile menu when clicking a link
-navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navLinks.classList.remove('active');
-    });
-});
+  // Toggle dropdown when user button is clicked
+  userBtn.addEventListener('click', function(event) {
+      dropdownContent.classList.toggle('show');
+      event.stopPropagation();
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(event) {
+      if (!navContainer.contains(event.target)) {
+          dropdownContent.classList.remove('show');
+      }
+  });
+
+  // Handle Get Started button click
+  getStartedBtn.addEventListener('click', function() {
+      // Replace with your sign up/login logic
+      window.location.href = '/signup';
+  });
+
+  // Handle logout
+  document.getElementById('logoutBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      // Replace with your logout logic
+      localStorage.setItem('isLoggedIn', 'false');
+      updateNavigation();
+  });
+
+  // For demo purposes - toggle login state
+  // Remove this in production and replace with your actual auth logic
+  function toggleLoginState() {
+      localStorage.setItem('isLoggedIn', (!isUserLoggedIn()).toString());
+      updateNavigation();
+  }
+
+  // Initialize navigation state
+  updateNavigation();
