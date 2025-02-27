@@ -159,12 +159,11 @@ def main(request):
 @login_required
 def user_extracted_texts(request):
     query = request.GET.get('q', '')
-    if query:
-        extracted_texts = ExtractedText.objects.filter(user=request.user, file_name__icontains=query)
-    else:
-        extracted_texts = ExtractedText.objects.filter(user=request.user)
 
-    # Fetch all texts from GCS in parallel using ThreadPoolExecutor
+    # Fetch all text metadata first
+    extracted_texts = ExtractedText.objects.filter(user=request.user).only("id", "file_name", "gcs_url", "uploaded_at")
+
+    # Fetch all extracted texts from GCS in parallel
     def fetch_text(text_entry):
         try:
             text_entry.extracted_text = fetch_text_from_gcs(text_entry.gcs_url)
@@ -175,12 +174,24 @@ def user_extracted_texts(request):
     with ThreadPoolExecutor() as executor:
         extracted_texts = list(executor.map(fetch_text, extracted_texts))
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('uploaded_content_partial.html', {'extracted_texts': extracted_texts, 'query': query})
-        return HttpResponse(html)
+    # Convert QuerySet to JSON-serializable list
+    extracted_texts_list = [
+        {
+            "id": text.id,
+            "file_name": text.file_name,
+            "extracted_text": text.extracted_text,
+            "uploaded_at": text.uploaded_at.strftime("%Y-%m-%d %H:%M"),
+        }
+        for text in extracted_texts
+    ]
 
+    # If it's an AJAX request, return JSON response
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'texts': extracted_texts_list})
+
+    # Otherwise, render template with preloaded data
     return render(request, "uploaded_content.html", {
-        "extracted_texts": extracted_texts,
+        "extracted_texts": extracted_texts_list,
         "query": query,
     })
 

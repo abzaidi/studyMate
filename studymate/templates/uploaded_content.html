@@ -5,14 +5,13 @@
 
 <div class="text-container">
     <h1 class="text-h1">My Extracted Texts</h1>
-    
+
+
     <div class="search-container">
-        <form method="GET" action="{% url 'uploaded_content' %}" id="searchForm">
-            <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input type="text" class="search-input" placeholder="Search your texts..." id="searchInput" name="q" value="{{ query }}">
-        </form>
+        <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" class="search-input" placeholder="Search your texts..." id="searchInput">
     </div>
 
     <div class="texts-container" id="textsContainer">
@@ -54,17 +53,76 @@
 <script src="{% static 'js/footer.js' %}?v=1"></script>
 
 <script>
-    document.getElementById('searchInput').addEventListener('input', function() {
-        const query = this.value;
-        fetch(`/uploaded_content/?q=${encodeURIComponent(query)}`)
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const newContent = doc.getElementById('textsContainer').innerHTML;
-                document.getElementById('textsContainer').innerHTML = newContent;
-            });
-    });
+    let allTexts = [];
+
+    // Fetch all texts when the page loads
+    function loadTexts() {
+        fetch(`/uploaded_content/`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.json())
+            .then(data => {
+                allTexts = data.texts;
+                displayTexts(allTexts); // Display all texts initially
+            })
+            .catch(error => console.error("Error loading texts:", error));
+    }
+
+    function countWords(text) {
+        return text.trim().split(/\s+/).length; // Splits by any whitespace (handles multiple spaces & new lines)
+    }
+
+    // Display texts in the container
+    function displayTexts(texts) {
+        const container = document.getElementById('textsContainer');
+        container.innerHTML = ""; // Clear previous content
+
+        texts.forEach(text => {
+            const wordCount = countWords(text.extracted_text);
+            const textCard = `
+                <div class="text-card">
+                    <div class="card-header">
+                        <div class="text-content">
+                            <h2 class="text-title">${text.file_name}</h2>
+                            <p class="text-excerpt">${text.extracted_text.slice(0, 150)}...</p>
+                        </div>
+                        <button class="view-btn">
+                            View
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="metadata">
+                        <div class="metadata-item">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>${wordCount} words</span>
+                        </div>
+                        <div class="metadata-item">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Uploaded on ${text.uploaded_at}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += textCard;
+        });
+    }
+
+    // Filter texts based on input query
+    function filterTexts() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filteredTexts = allTexts.filter(text => text.file_name.toLowerCase().includes(query));
+        displayTexts(filteredTexts);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', filterTexts);
+
+    // Load all texts on page load
+    document.addEventListener('DOMContentLoaded', loadTexts);
 </script>
+
 
 {% endblock %}
