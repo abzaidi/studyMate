@@ -178,3 +178,5 @@ fetch('footer.html')
       dropZone.style.borderColor = '#E5E7EB';
       dropZone.style.backgroundColor = '#F9FAFB';
   });
+
+

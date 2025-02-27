@@ -7,10 +7,13 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 from .models import User, ExtractedText
 from .forms import MyUserCreationForm
 from .utils import upload_to_gcs, fetch_text_from_gcs
+from concurrent.futures import ThreadPoolExecutor
 
 # Create your views here.
 
@@ -155,16 +158,30 @@ def main(request):
 
 @login_required
 def user_extracted_texts(request):
-    extracted_texts = ExtractedText.objects.filter(user=request.user)
+    query = request.GET.get('q', '')
+    if query:
+        extracted_texts = ExtractedText.objects.filter(user=request.user, file_name__icontains=query)
+    else:
+        extracted_texts = ExtractedText.objects.filter(user=request.user)
 
-    for text_entry in extracted_texts:
+    # Fetch all texts from GCS in parallel using ThreadPoolExecutor
+    def fetch_text(text_entry):
         try:
-            text_entry.extracted_text = fetch_text_from_gcs(text_entry.gcs_url)  # Now it contains only the object path
+            text_entry.extracted_text = fetch_text_from_gcs(text_entry.gcs_url)
         except FileNotFoundError:
-            text_entry.extracted_text = "[Error: File not found in Google Cloud Storage]" # Retrieve text
+            text_entry.extracted_text = "[Error: File not found in Google Cloud Storage]"
+        return text_entry
 
-    return render(request, "saved_texts.html", {
-        "extracted_texts": extracted_texts
+    with ThreadPoolExecutor() as executor:
+        extracted_texts = list(executor.map(fetch_text, extracted_texts))
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('uploaded_content_partial.html', {'extracted_texts': extracted_texts, 'query': query})
+        return HttpResponse(html)
+
+    return render(request, "uploaded_content.html", {
+        "extracted_texts": extracted_texts,
+        "query": query,
     })
 
 

@@ -1,0 +1,32 @@
+<div class="texts-container" id="textsContainer">
+    {% for text in extracted_texts %}
+    <div class="text-card">
+        <div class="card-header">
+            <div class="text-content">
+                <h2 class="text-title">{{ text.file_name }}</h2>
+                <p class="text-excerpt">{{ text.extracted_text|slice:":150" }}...</p>
+            </div>
+            <button class="view-btn" onclick="">
+                View
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+        <div class="metadata">
+            <div class="metadata-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>{{ text.extracted_text|wordcount }} words</span>
+            </div>
+            <div class="metadata-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Uploaded on {{ text.uploaded_at }}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
