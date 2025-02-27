@@ -328,6 +328,16 @@ textarea {
     background-color: #6D28D9;
 }
 
+.user-greeting {
+    padding: 12px 16px;
+    color: #4B5563;
+    font-weight: 500;
+    background-color: #F9FAFB;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
 .dropdown-content {
     display: none;
     position: absolute;
