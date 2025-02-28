@@ -7,10 +7,13 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 from .models import User, ExtractedText
 from .forms import MyUserCreationForm
 from .utils import upload_to_gcs, fetch_text_from_gcs
+from concurrent.futures import ThreadPoolExecutor
 
 # Create your views here.
 
@@ -155,16 +158,41 @@ def main(request):
 
 @login_required
 def user_extracted_texts(request):
-    extracted_texts = ExtractedText.objects.filter(user=request.user)
+    query = request.GET.get('q', '')
 
-    for text_entry in extracted_texts:
+    # Fetch all text metadata first
+    extracted_texts = ExtractedText.objects.filter(user=request.user).only("id", "file_name", "gcs_url", "uploaded_at")
+
+    # Fetch all extracted texts from GCS in parallel
+    def fetch_text(text_entry):
         try:
-            text_entry.extracted_text = fetch_text_from_gcs(text_entry.gcs_url)  # Now it contains only the object path
+            text_entry.extracted_text = fetch_text_from_gcs(text_entry.gcs_url)
         except FileNotFoundError:
-            text_entry.extracted_text = "[Error: File not found in Google Cloud Storage]" # Retrieve text
+            text_entry.extracted_text = "[Error: File not found in Google Cloud Storage]"
+        return text_entry
 
-    return render(request, "saved_texts.html", {
-        "extracted_texts": extracted_texts
+    with ThreadPoolExecutor() as executor:
+        extracted_texts = list(executor.map(fetch_text, extracted_texts))
+
+    # Convert QuerySet to JSON-serializable list
+    extracted_texts_list = [
+        {
+            "id": text.id,
+            "file_name": text.file_name,
+            "extracted_text": text.extracted_text,
+            "uploaded_at": text.uploaded_at.strftime("%Y-%m-%d %H:%M"),
+        }
+        for text in extracted_texts
+    ]
+
+    # If it's an AJAX request, return JSON response
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'texts': extracted_texts_list})
+
+    # Otherwise, render template with preloaded data
+    return render(request, "uploaded_content.html", {
+        "extracted_texts": extracted_texts_list,
+        "query": query,
     })
 
 

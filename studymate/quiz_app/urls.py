@@ -11,7 +11,7 @@ urlpatterns = [
     path("logout/", views.logoutUser, name="logout"),
     path("register/", views.registerPage, name="register"),
     path("main/", views.main, name="main"),
-    path("saved_texts/", views.user_extracted_texts, name="saved_texts"),
+    path("uploaded_content/", views.user_extracted_texts, name="uploaded_content"),
     path('send_email/', views.send_email, name='send_email'),
     path('redirect-to-register/', views.redirect_to_register, name='redirect_to_register'),
 ]
