@@ -63,6 +63,8 @@ Set up environment variables:
 
 - Enable Google Vision API in Google Cloud Console and generate the JSON API key file using a service account and place that file in the root directory of the project.
 
+- Create a new bucket in google cloud storage with the name "save-notes-to-cloud" and make it public.
+
 - Add the necessary environment variables, such as TOGETHER_API_KEY and GOOGLE_APPLICATION_CREDENTIALS.
 
 ```bash
