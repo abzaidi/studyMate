@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from .quiz_creation import generate_quizzes_from_text, process_file
 from .qna_creation import generate_qna_from_text
 from django.core.files.storage import default_storage
@@ -8,7 +8,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotFound
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, ExtractedText
 from .forms import MyUserCreationForm
@@ -128,13 +129,18 @@ def main(request):
                 absolute_path = default_storage.path(file_path)
                 extracted_text = process_file(absolute_path)
 
-                # Upload extracted text to GCS
-                gcs_url = upload_to_gcs(input_file.name, extracted_text, file_type="extracted_texts")
-
-                # Save to database
+                # Save extracted text to the database first to get the ID
                 extracted_obj = ExtractedText.objects.create(
-                    user=request.user, file_name=input_file.name, gcs_url=gcs_url
+                    user=request.user, file_name=input_file.name
                 )
+
+                # Use extracted_obj.id in the filename
+                extracted_filename = f"{extracted_obj.id}_extracted_text"
+                gcs_url = upload_to_gcs(extracted_filename, extracted_text, file_type="extracted_texts")
+
+                # Update the database entry with the correct GCS URL
+                extracted_obj.gcs_url = gcs_url
+                extracted_obj.save()
 
                 default_storage.delete(file_path)
 
@@ -146,11 +152,14 @@ def main(request):
                 if not generated_quizzes:
                     return JsonResponse({"error": "No quiz content generated."}, status=400)
 
-                # Ensure generated_quizzes is always a string
-                quiz_gcs_url = upload_to_gcs(str(request.user.id) + "_quiz", generated_quizzes, file_type="quizzes")
+                # Get the latest extracted text object for the user
+                extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
+
+                # Use extracted_obj.id to make the filename unique
+                quiz_filename = f"{extracted_obj.id}_quiz"
+                quiz_gcs_url = upload_to_gcs(quiz_filename, generated_quizzes, file_type="quizzes")
 
                 # Update database entry
-                extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
                 extracted_obj.quiz_gcs_url = quiz_gcs_url
                 extracted_obj.save()
 
@@ -162,18 +171,18 @@ def main(request):
                 if not generated_qna:
                     return JsonResponse({"error": "No quiz content generated."}, status=400)
 
-                # Upload Q&A to GCS
-                qna_gcs_url = upload_to_gcs(str(request.user.id) + "_qna", generated_qna, file_type="qna")
+                # Get the latest extracted text object for the user
+                extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
+
+                # Use extracted_obj.id to make the filename unique
+                qna_filename = f"{extracted_obj.id}_qna"
+                qna_gcs_url = upload_to_gcs(qna_filename, generated_qna, file_type="qna")
 
                 # Update database entry
-                extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
                 extracted_obj.qna_gcs_url = qna_gcs_url
                 extracted_obj.save()
 
-    # Fetch extracted text if GCS URL exists
-    if gcs_url:
-        extracted_text = fetch_text_from_gcs(gcs_url)
-
+    # No need to fetch extracted text from GCS, as we already have it in `extracted_text`
     cntx.update({
         "extracted_text": extracted_text,
         "generated_quizzes": generated_quizzes,
@@ -185,21 +194,19 @@ def main(request):
     return render(request, "main.html", cntx)
 
 
-@login_required
+@login_required(login_url='login')
 def user_extracted_texts(request):
     query = request.GET.get('q', '')
 
     # Fetch text metadata
     extracted_texts = ExtractedText.objects.filter(user=request.user).only(
-        "id", "file_name", "gcs_url", "quiz_gcs_url", "qna_gcs_url", "uploaded_at"
+        "id", "file_name", "gcs_url", "uploaded_at"
     )
 
     # Fetch all extracted texts, quizzes, and Q&A in parallel
     def fetch_data(text_entry):
         try:
             text_entry.extracted_text = fetch_text_from_gcs(text_entry.gcs_url)
-            text_entry.quiz_text = fetch_text_from_gcs(text_entry.quiz_gcs_url) if text_entry.quiz_gcs_url else None
-            text_entry.qna_text = fetch_text_from_gcs(text_entry.qna_gcs_url) if text_entry.qna_gcs_url else None
         except FileNotFoundError:
             text_entry.extracted_text = "[Error: File not found in GCS]"
         return text_entry
@@ -213,8 +220,6 @@ def user_extracted_texts(request):
             "id": text.id,
             "file_name": text.file_name,
             "extracted_text": text.extracted_text,
-            "quiz_text": text.quiz_text,
-            "qna_text": text.qna_text,
             "uploaded_at": text.uploaded_at.strftime("%Y-%m-%d %H:%M"),
         }
         for text in extracted_texts
@@ -230,6 +235,37 @@ def user_extracted_texts(request):
         "query": query,
     })
 
+@login_required(login_url='login')
+def user_extracted_text_detail(request, text_id):
+    try:
+        text_entry = ExtractedText.objects.get(id=text_id, user=request.user)
+
+        # Fetch extracted text, quiz, and Q&A content
+        extracted_text = fetch_text_from_gcs(text_entry.gcs_url)
+        quiz_text = fetch_text_from_gcs(text_entry.quiz_gcs_url) if text_entry.quiz_gcs_url else "No Quizzes generated yet."
+        qna_text = fetch_text_from_gcs(text_entry.qna_gcs_url) if text_entry.qna_gcs_url else "No QnAs generated yet."
+
+        context = {
+            "text_entry": text_entry,
+            "extracted_text": extracted_text,
+            "quiz_text": quiz_text,
+            "qna_text": qna_text,
+        }
+
+        return render(request, "uploaded_content_detail.html", context)
+
+    except ExtractedText.DoesNotExist:
+        return HttpResponseNotFound("Note not found")
+
+
+
+@csrf_exempt
+def delete_uploaded_content(request, text_id):
+    if request.method == "DELETE":
+        text = get_object_or_404(ExtractedText, id=text_id)
+        text.delete()
+        return JsonResponse({"success": True})
+    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
 
 def send_email(request):
     if request.method == 'POST':
