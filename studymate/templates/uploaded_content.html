@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="text-container">
-    <h1 class="text-h1">My Extracted Texts</h1>
+    <h1 class="text-h1">My Uploaded Content</h1>
 
 
     <div class="search-container">
@@ -17,18 +17,27 @@
     <div class="texts-container" id="textsContainer">
         <!-- Text cards will be inserted here -->
         {% for text in extracted_texts %}
-        <div class="text-card">
+        <div class="text-card" id="text-card-{{ text.id }}">
             <div class="card-header">
                 <div class="text-content">
                     <h2 class="text-title">{{ text.file_name }}</h2>
                     <p class="text-excerpt">{{ text.extracted_text|slice:":150" }}...</p>
                 </div>
-                <button class="view-btn" onclick="">
-                    View
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+                <div class="action-buttons">
+                    <a class="view-btn" href="{% url 'uploaded_content_detail' text.id %}">
+                        View
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    <a class="delete-btn" data-id="{{ text.id }}">
+                        Delete
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </a>
+                </div>
+
             </div>
             <div class="metadata">
                 <div class="metadata-item">
@@ -78,18 +87,26 @@
         texts.forEach(text => {
             const wordCount = countWords(text.extracted_text);
             const textCard = `
-                <div class="text-card">
+                <div class="text-card" id="text-card-${text.id}">
                     <div class="card-header">
                         <div class="text-content">
                             <h2 class="text-title">${text.file_name}</h2>
                             <p class="text-excerpt">${text.extracted_text.slice(0, 150)}...</p>
                         </div>
-                        <button class="view-btn">
-                            View
-                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
+                        <div class="action-buttons">
+                            <a class="view-btn" href="/uploaded_content/${text.id}/">
+                                View
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                            <a class="delete-btn" data-id="${text.id}">
+                                Delete
+                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                     <div class="metadata">
                         <div class="metadata-item">
@@ -122,6 +139,53 @@
 
     // Load all texts on page load
     document.addEventListener('DOMContentLoaded', loadTexts);
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    function handleDelete(event) {
+        const deleteBtn = event.target.closest('.delete-btn');
+        if (!deleteBtn) return;
+
+        const textId = deleteBtn.getAttribute('data-id');
+        if (!textId) return;
+
+
+        fetch(`/uploaded_content/delete/${textId}/`, {
+            method: 'DELETE',
+            headers: { 
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete text.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Remove from the UI
+                const card = document.getElementById(`text-card-${textId}`);
+                if (card) {
+                    card.remove();
+                }
+
+                // Remove the deleted text from the `allTexts` list
+                allTexts = allTexts.filter(text => text.id != textId);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete text.');
+        });
+    }
+
+    // Attach event listener to delete buttons
+    document.getElementById('textsContainer').addEventListener('click', handleDelete);
+});
 </script>
 
 

@@ -41,10 +41,12 @@ class User(AbstractUser):
 
 
 class ExtractedText(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Links text to a user
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=255)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    gcs_url = models.URLField()  # Google Cloud Storage link
+    gcs_url = models.URLField()  # Extracted text file
+    quiz_gcs_url = models.URLField(blank=True, null=True)  # Quiz file
+    qna_gcs_url = models.URLField(blank=True, null=True)  # Q&A file
 
     def __str__(self):
         return self.file_name

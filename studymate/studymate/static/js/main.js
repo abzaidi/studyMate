@@ -181,4 +181,6 @@ fetch('footer.html')
 
 
   
+// Uploaded content detail page
+
 

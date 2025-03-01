@@ -1,0 +1,99 @@
+{% extends 'start.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+<!-- Main Content -->
+<main class="extracted-text-detail-container">
+    <h1 class="page-title">{{ text_entry.file_name }}</h1>
+    <p class="page-description">Review your extracted content and choose what you'd like to generate next. You can view your generated quizzes and Q&A pairs below.</p>
+
+    <!-- Extracted Text Section -->
+    <section class="extracted-text-container2">
+        <h2 class="section-title">Extracted Content</h2>
+        <div class="text-box2">
+            <div class="text-box-content">{{ extracted_text }}</div>
+        </div>
+    </section>
+
+    <!-- Button Controls -->
+    <div class="button-controls">
+        <button class="action-btn" id="generation-btn">Go to Generation Page</button>
+        <div class="toggle-buttons">
+            <button class="toggle-btn" id="quizzes-btn">Show Generated Quizzes</button>
+            <button class="toggle-btn" id="qna-btn">Show Generated Q&As</button>
+        </div>
+    </div>
+
+    <!-- Quizzes Section -->
+    <section class="results-section" id="quizzes-section">
+        <h2 class="section-title">Generated Quizzes</h2>
+        <div class="quiz-container">
+            <div class="quiz-item">
+                <div class="text-box2">
+                    <div class="text-box-content">{{ quiz_text }}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- For the Q&A Section, replace with: -->
+    <section class="results-section" id="qna-section">
+        <h2 class="section-title">Generated Q&As</h2>
+        <div class="qna-container">
+            <div class="qna-item">
+                <div class="text-box2">
+                    <div class="text-box-content">{{ qna_text }}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% include 'footer.html' %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/footer.js' %}?v=1"></script>
+<script>
+const generationBtn = document.getElementById('generation-btn');
+const quizzesBtn = document.getElementById('quizzes-btn');
+const qnaBtn = document.getElementById('qna-btn');
+const quizzesSection = document.getElementById('quizzes-section');
+const qnaSection = document.getElementById('qna-section');
+
+// Add event listeners
+generationBtn.addEventListener('click', () => {
+    // Redirect to generation page - replace with your actual URL
+    window.location.href = '/generate';
+});
+
+quizzesBtn.addEventListener('click', () => {
+    // Toggle quizzes section
+    quizzesBtn.classList.toggle('active');
+    quizzesSection.classList.toggle('active');
+    
+    // Hide Q&A section if visible
+    if (qnaBtn.classList.contains('active')) {
+        qnaBtn.classList.remove('active');
+        qnaSection.classList.remove('active');
+    }
+});
+
+qnaBtn.addEventListener('click', () => {
+    // Toggle Q&A section
+    qnaBtn.classList.toggle('active');
+    qnaSection.classList.toggle('active');
+    
+    // Hide quizzes section if visible
+    if (quizzesBtn.classList.contains('active')) {
+        quizzesBtn.classList.remove('active');
+        quizzesSection.classList.remove('active');
+    }
+});
+
+
+
+</script>
+
+
+{% endblock %}

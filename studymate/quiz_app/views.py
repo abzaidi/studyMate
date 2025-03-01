@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from .quiz_creation import generate_quizzes_from_text, process_file
 from .qna_creation import generate_qna_from_text
 from django.core.files.storage import default_storage
@@ -8,7 +8,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotFound
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, ExtractedText
 from .forms import MyUserCreationForm
@@ -117,62 +118,101 @@ def main(request):
     generated_qna = ""
     extracted_text = ""
     gcs_url = None
+    quiz_gcs_url = None
+    qna_gcs_url = None
+
     if request.method == "POST":
         if "upload_file" in request.POST:
-            input_file = request.FILES.get("input_file")  # Get the input text from the form
+            input_file = request.FILES.get("input_file")  
             if input_file:
-                # Save the uploaded file to the MEDIA_ROOT directory
                 file_path = default_storage.save(input_file.name, input_file)
-                # Get the absolute path of the saved file
                 absolute_path = default_storage.path(file_path)
-                # Process the file to extract text
                 extracted_text = process_file(absolute_path)
-                # Upload the extracted text to Google Cloud Storage
-                gcs_url = upload_to_gcs(input_file.name, extracted_text)
-                # Save the fine name and its GCS URL to the database
-                ExtractedText.objects.create(user=request.user, file_name=input_file.name, gcs_url=gcs_url)
-                # Clean up the temporary file
-                default_storage.delete(file_path)
-        elif "generate_quiz" in request.POST:
-            # Get extracted text from the hidden input
-            extracted_text = request.POST.get("extracted_text", "")
-            if extracted_text:
-                # Generate quizzes from the extracted text
-                generated_quizzes = generate_quizzes_from_text(extracted_text)
-        elif "generate_qa" in request.POST:
-            # Get extracted text from the hidden input
-            extracted_text = request.POST.get("extracted_text", "")
-            if extracted_text:
-                # Generate Q&A pairs from the extracted text
-                generated_qna = generate_qna_from_text(extracted_text)
-        
-    if gcs_url:
-        extracted_text = fetch_text_from_gcs(gcs_url)
 
-    cntx.update({"extracted_text": extracted_text, 
-            "generated_quizzes": generated_quizzes, 
-            "generated_qna": generated_qna,
-            })  # Generate quizzes dynamically
+                # Save extracted text to the database first to get the ID
+                extracted_obj = ExtractedText.objects.create(
+                    user=request.user, file_name=input_file.name
+                )
+
+                # Use extracted_obj.id in the filename
+                extracted_filename = f"{extracted_obj.id}_extracted_text"
+                gcs_url = upload_to_gcs(extracted_filename, extracted_text, file_type="extracted_texts")
+
+                # Update the database entry with the correct GCS URL
+                extracted_obj.gcs_url = gcs_url
+                extracted_obj.save()
+
+                default_storage.delete(file_path)
+
+        elif "generate_quiz" in request.POST:
+            extracted_text = request.POST.get("extracted_text", "")
+            if extracted_text:
+                generated_quizzes = generate_quizzes_from_text(extracted_text) or ""
+
+                if not generated_quizzes:
+                    return JsonResponse({"error": "No quiz content generated."}, status=400)
+
+                # Get the latest extracted text object for the user
+                extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
+
+                # Use extracted_obj.id to make the filename unique
+                quiz_filename = f"{extracted_obj.id}_quiz"
+                quiz_gcs_url = upload_to_gcs(quiz_filename, generated_quizzes, file_type="quizzes")
+
+                # Update database entry
+                extracted_obj.quiz_gcs_url = quiz_gcs_url
+                extracted_obj.save()
+
+        elif "generate_qa" in request.POST:
+            extracted_text = request.POST.get("extracted_text", "")
+            if extracted_text:
+                generated_qna = generate_qna_from_text(extracted_text)
+
+                if not generated_qna:
+                    return JsonResponse({"error": "No quiz content generated."}, status=400)
+
+                # Get the latest extracted text object for the user
+                extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
+
+                # Use extracted_obj.id to make the filename unique
+                qna_filename = f"{extracted_obj.id}_qna"
+                qna_gcs_url = upload_to_gcs(qna_filename, generated_qna, file_type="qna")
+
+                # Update database entry
+                extracted_obj.qna_gcs_url = qna_gcs_url
+                extracted_obj.save()
+
+    # No need to fetch extracted text from GCS, as we already have it in `extracted_text`
+    cntx.update({
+        "extracted_text": extracted_text,
+        "generated_quizzes": generated_quizzes,
+        "generated_qna": generated_qna,
+        "quiz_gcs_url": quiz_gcs_url,
+        "qna_gcs_url": qna_gcs_url
+    })
+
     return render(request, "main.html", cntx)
 
 
-@login_required
+@login_required(login_url='login')
 def user_extracted_texts(request):
     query = request.GET.get('q', '')
 
-    # Fetch all text metadata first
-    extracted_texts = ExtractedText.objects.filter(user=request.user).only("id", "file_name", "gcs_url", "uploaded_at")
+    # Fetch text metadata
+    extracted_texts = ExtractedText.objects.filter(user=request.user).only(
+        "id", "file_name", "gcs_url", "uploaded_at"
+    )
 
-    # Fetch all extracted texts from GCS in parallel
-    def fetch_text(text_entry):
+    # Fetch all extracted texts, quizzes, and Q&A in parallel
+    def fetch_data(text_entry):
         try:
             text_entry.extracted_text = fetch_text_from_gcs(text_entry.gcs_url)
         except FileNotFoundError:
-            text_entry.extracted_text = "[Error: File not found in Google Cloud Storage]"
+            text_entry.extracted_text = "[Error: File not found in GCS]"
         return text_entry
 
     with ThreadPoolExecutor() as executor:
-        extracted_texts = list(executor.map(fetch_text, extracted_texts))
+        extracted_texts = list(executor.map(fetch_data, extracted_texts))
 
     # Convert QuerySet to JSON-serializable list
     extracted_texts_list = [
@@ -185,16 +225,47 @@ def user_extracted_texts(request):
         for text in extracted_texts
     ]
 
-    # If it's an AJAX request, return JSON response
+    # AJAX response
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'texts': extracted_texts_list})
 
-    # Otherwise, render template with preloaded data
+    # Render template
     return render(request, "uploaded_content.html", {
         "extracted_texts": extracted_texts_list,
         "query": query,
     })
 
+@login_required(login_url='login')
+def user_extracted_text_detail(request, text_id):
+    try:
+        text_entry = ExtractedText.objects.get(id=text_id, user=request.user)
+
+        # Fetch extracted text, quiz, and Q&A content
+        extracted_text = fetch_text_from_gcs(text_entry.gcs_url)
+        quiz_text = fetch_text_from_gcs(text_entry.quiz_gcs_url) if text_entry.quiz_gcs_url else "No Quizzes generated yet."
+        qna_text = fetch_text_from_gcs(text_entry.qna_gcs_url) if text_entry.qna_gcs_url else "No QnAs generated yet."
+
+        context = {
+            "text_entry": text_entry,
+            "extracted_text": extracted_text,
+            "quiz_text": quiz_text,
+            "qna_text": qna_text,
+        }
+
+        return render(request, "uploaded_content_detail.html", context)
+
+    except ExtractedText.DoesNotExist:
+        return HttpResponseNotFound("Note not found")
+
+
+
+@csrf_exempt
+def delete_uploaded_content(request, text_id):
+    if request.method == "DELETE":
+        text = get_object_or_404(ExtractedText, id=text_id)
+        text.delete()
+        return JsonResponse({"success": True})
+    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
 
 def send_email(request):
     if request.method == 'POST':

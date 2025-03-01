@@ -12,6 +12,8 @@ urlpatterns = [
     path("register/", views.registerPage, name="register"),
     path("main/", views.main, name="main"),
     path("uploaded_content/", views.user_extracted_texts, name="uploaded_content"),
+    path("uploaded_content/<int:text_id>/", views.user_extracted_text_detail, name="uploaded_content_detail"),
+    path('uploaded_content/delete/<int:text_id>/', views.delete_uploaded_content, name='delete_uploaded_content'),
     path('send_email/', views.send_email, name='send_email'),
     path('redirect-to-register/', views.redirect_to_register, name='redirect_to_register'),
 ]
