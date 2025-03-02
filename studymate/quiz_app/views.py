@@ -60,22 +60,6 @@ def logoutUser(request):
     return redirect('login')
 
 
-# def registerPage(request):
-#     form = MyUserCreationForm()
-#     if request.method == 'POST':
-#         form = MyUserCreationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save(commit=False)
-#             user.email = user.email.lower()
-#             user.save()
-#             login(request, user)
-#             return redirect('home')
-#         else:
-#             messages.error(request, "An error occurred during registration.")
-
-#     context = {'form': form}
-#     return render(request, "login.html", context)
-
 def registerPage(request):
     email_prefill = request.GET.get("email", "") 
     if request.method == 'POST':
@@ -111,6 +95,7 @@ def contact(request):
     context = {'page': 'contact'}
     return render(request, "contact.html", context)
 
+
 @login_required(login_url='login')
 def main(request):
     cntx = {'page': 'main'}
@@ -121,6 +106,17 @@ def main(request):
     quiz_gcs_url = None
     qna_gcs_url = None
 
+    # Get text_id from URL (if redirected from uploaded_content_detail)
+    text_id = request.GET.get("text_id")
+    extracted_obj = None
+
+    if text_id:
+        try:
+            extracted_obj = ExtractedText.objects.get(id=text_id, user=request.user)
+            extracted_text = fetch_text_from_gcs(extracted_obj.gcs_url) if extracted_obj.gcs_url else ""
+        except ExtractedText.DoesNotExist:
+            return HttpResponseNotFound("Extracted text not found.")
+
     if request.method == "POST":
         if "upload_file" in request.POST:
             input_file = request.FILES.get("input_file")  
@@ -129,16 +125,15 @@ def main(request):
                 absolute_path = default_storage.path(file_path)
                 extracted_text = process_file(absolute_path)
 
-                # Save extracted text to the database first to get the ID
+                # Save extracted text to database and get its ID
                 extracted_obj = ExtractedText.objects.create(
                     user=request.user, file_name=input_file.name
                 )
 
-                # Use extracted_obj.id in the filename
                 extracted_filename = f"{extracted_obj.id}_extracted_text"
                 gcs_url = upload_to_gcs(extracted_filename, extracted_text, file_type="extracted_texts")
 
-                # Update the database entry with the correct GCS URL
+                # Update database with GCS URL
                 extracted_obj.gcs_url = gcs_url
                 extracted_obj.save()
 
@@ -152,10 +147,10 @@ def main(request):
                 if not generated_quizzes:
                     return JsonResponse({"error": "No quiz content generated."}, status=400)
 
-                # Get the latest extracted text object for the user
-                extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
+                # Ensure extracted_obj exists (either from previous step or fetch latest)
+                if not extracted_obj:
+                    extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
 
-                # Use extracted_obj.id to make the filename unique
                 quiz_filename = f"{extracted_obj.id}_quiz"
                 quiz_gcs_url = upload_to_gcs(quiz_filename, generated_quizzes, file_type="quizzes")
 
@@ -169,12 +164,12 @@ def main(request):
                 generated_qna = generate_qna_from_text(extracted_text)
 
                 if not generated_qna:
-                    return JsonResponse({"error": "No quiz content generated."}, status=400)
+                    return JsonResponse({"error": "No Q&A content generated."}, status=400)
 
-                # Get the latest extracted text object for the user
-                extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
+                # Ensure extracted_obj exists
+                if not extracted_obj:
+                    extracted_obj = ExtractedText.objects.filter(user=request.user).latest("uploaded_at")
 
-                # Use extracted_obj.id to make the filename unique
                 qna_filename = f"{extracted_obj.id}_qna"
                 qna_gcs_url = upload_to_gcs(qna_filename, generated_qna, file_type="qna")
 
@@ -182,16 +177,19 @@ def main(request):
                 extracted_obj.qna_gcs_url = qna_gcs_url
                 extracted_obj.save()
 
-    # No need to fetch extracted text from GCS, as we already have it in `extracted_text`
+    # Ensure extracted_obj is updated in context
     cntx.update({
+        "text_id": extracted_obj.id if extracted_obj else None,
         "extracted_text": extracted_text,
         "generated_quizzes": generated_quizzes,
         "generated_qna": generated_qna,
-        "quiz_gcs_url": quiz_gcs_url,
-        "qna_gcs_url": qna_gcs_url
+        "quiz_gcs_url": quiz_gcs_url or (extracted_obj.quiz_gcs_url if extracted_obj else None),
+        "qna_gcs_url": qna_gcs_url or (extracted_obj.qna_gcs_url if extracted_obj else None)
     })
 
     return render(request, "main.html", cntx)
+
+
 
 
 @login_required(login_url='login')

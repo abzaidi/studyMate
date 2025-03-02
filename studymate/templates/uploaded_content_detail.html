@@ -20,7 +20,7 @@
 
     <!-- Button Controls -->
     <div class="button-controls">
-        <button class="action-btn" id="generation-btn">Go to Generation Page</button>
+        <a href="{% url 'main' %}?text_id={{ text_entry.id }}" class="action-btn" id="generation-btn">Go to Generation Page</a>
         <div class="toggle-buttons">
             <button class="toggle-btn" id="quizzes-btn">Show Generated Quizzes</button>
             <button class="toggle-btn" id="qna-btn">Show Generated Q&As</button>
