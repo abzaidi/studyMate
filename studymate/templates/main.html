@@ -39,11 +39,12 @@
                 <div class="text-header">
                     <h2>Extracted Text</h2>
                 </div>
-                <textarea class="extracted-text" id="extractedText" placeholder="Extracted text will appear here..." spellcheck="false">{{ extracted_text }}</textarea>
+                <textarea class="extracted-text" id="extractedText" name="extracted_text" placeholder="Extracted text will appear here..." spellcheck="false">{{ extracted_text }}</textarea>
             </div>
             <div class="button-group">
                 <form method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="text_id" value="{{ text_id }}">
                     <input type="hidden" name="extracted_text" value="{{ extracted_text }}">
                     <button type="submit" class="btn btn-primary" name="generate_quiz">Generate Quiz</button>
                     <button type="submit" class="btn btn-primary" name="generate_qa">Generate Q&A</button>
