@@ -21,7 +21,7 @@
         </button>
         <div class="dropdown-content" id="dropdownContent">
             <div class="user-greeting" id="userGreeting">Hi, {{user.name}}</div>
-            <a href="/profile">User Profile</a>
+            <a href="{% url 'profile' %}">User Profile</a>
             <a href="{% url 'main' %}">Upload Notes</a>
             <a href="/progress">User Progress</a>
             <a href="{% url 'uploaded_content' %}">Uploaded Content</a>
@@ -80,7 +80,7 @@
         </button>
         <div class="dropdown-content" id="dropdownContent">
             <div class="user-greeting" id="userGreeting">Hi, {{user.name}}</div>
-            <a href="/profile">User Profile</a>
+            <a href="{% url 'profile' %}">User Profile</a>
             <a href="{% url 'main' %}">Upload Notes</a>
             <a href="/progress">User Progress</a>
             <a href="{% url 'uploaded_content' %}">Uploaded Content</a>

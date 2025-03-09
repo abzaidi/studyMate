@@ -4,15 +4,15 @@ from .qna_creation import generate_qna_from_text
 from django.core.files.storage import default_storage
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.http import JsonResponse, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, ExtractedText
-from .forms import MyUserCreationForm
+from .models import User, ExtractedText, UserProfile
+from .forms import MyUserCreationForm, UserProfileForm, CustomPasswordChangeForm
 from .utils import upload_to_gcs, fetch_text_from_gcs
 from concurrent.futures import ThreadPoolExecutor
 
@@ -94,6 +94,44 @@ def about(request):
 def contact(request):
     context = {'page': 'contact'}
     return render(request, "contact.html", context)
+
+@login_required
+def profile_view(request):
+    user = request.user
+    profile, created = UserProfile.objects.get_or_create(user=user)  # Ensure profile exists
+
+    if request.method == "POST":
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        password_form = CustomPasswordChangeForm(user, request.POST)
+
+        new_name = request.POST.get("name", "").strip()
+        if new_name:
+            user.name = new_name
+            user.save()  # Save user model
+
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, "Your profile has been updated successfully!")
+        
+        if request.POST.get("new_password1") and request.POST.get("new_password2"):
+            if password_form.is_valid():
+                user.set_password(password_form.cleaned_data["new_password1"])
+                user.save()
+                update_session_auth_hash(request, user)  # Keep the user logged in
+                messages.success(request, "Password updated successfully!")
+
+        return redirect("profile")
+
+    else:
+        profile_form = UserProfileForm(instance=profile)
+        password_form = CustomPasswordChangeForm(user)
+
+    return render(request, "user_profile.html", {
+        "profile_form": profile_form,
+        "password_form": password_form,
+    })
+
+
 
 
 @login_required(login_url='login')
