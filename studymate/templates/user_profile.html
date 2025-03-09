@@ -1,0 +1,171 @@
+{% extends 'start.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="main-content">
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>User Profile</h1>
+            <p>Manage your account information and preferences to customize your StudyMate experience.</p>
+        </div>
+
+        <div class="profile-form">
+            <div class="success-message" id="successMessage">
+                Your profile has been updated successfully!
+            </div>
+
+            <form id="profileForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="avatar-section">
+                    <div class="avatar-preview" id="avatarPreview">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="Avatar">
+                        {% else %}
+                            <span>?</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="avatarUpload" class="file-upload-label">Upload Photo</label>
+                        <input type="file" name="avatar" id="avatarUpload" class="file-upload" accept="image/*">
+                        <p style="margin-top: 8px; color: #666; font-size: 14px;">Recommended size: 200x200 pixels</p>
+                    </div>
+                </div>
+
+                
+                <div class="form-group">
+                    <label for="firstName">Full Name</label>
+                    <input type="text" id="firstName" name="name" value="{{ user.name }}" placeholder="Enter your full name">
+                </div>
+              
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="institution">Educational Institution</label>
+                    <input type="text" id="institution" name="institution" value="{{ user.profile.institution }}"  placeholder="Enter your educational institution">
+                </div>
+
+                <div class="form-group">
+                    <label for="fieldOfStudy">Field of Study</label>
+                    <select id="fieldOfStudy" name="field_of_study">
+                        <option value="">Select your field of study</option>
+                        <option value="computer-science" {% if user.profile.field_of_study == "computer-science" %}selected{% endif %}>Computer Science</option>
+                        <option value="engineering" {% if user.profile.field_of_study == "engineering" %}selected{% endif %}>Engineering</option>
+                        <option value="mathematics" {% if user.profile.field_of_study == "mathematics" %}selected{% endif %}>Mathematics</option>
+                        <option value="biology" {% if user.profile.field_of_study == "biology" %}selected{% endif %}>Biology</option>
+                        <option value="chemistry" {% if user.profile.field_of_study == "chemistry" %}selected{% endif %}>Chemistry</option>
+                        <option value="physics" {% if user.profile.field_of_study == "physics" %}selected{% endif %}>Physics</option>
+                        <option value="medicine" {% if user.profile.field_of_study == "medicine" %}selected{% endif %}>Medicine</option>
+                        <option value="business" {% if user.profile.field_of_study == "business" %}selected{% endif %}>Business</option>
+                        <option value="arts" {% if user.profile.field_of_study == "arts" %}selected{% endif %}>Arts & Humanities</option>
+                        <option value="other" {% if user.profile.field_of_study == "other" %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" placeholder="Enter your bio">{{ user.profile.bio }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">New Password</label>
+                    <input type="password" name="new_password1" id="password">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input type="password" name="new_password2" id="confirmPassword">
+                </div>
+
+                <div>
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% include 'footer.html' %}
+<script src="{% static 'js/main.js' %}?v=1"></script>
+<script src="{% static 'js/footer.js' %}?v=1"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Avatar upload preview
+        const avatarUpload = document.getElementById('avatarUpload');
+        const avatarPreview = document.getElementById('avatarPreview');
+        
+        avatarUpload.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Clear the placeholder text
+                    avatarPreview.innerHTML = '';
+                    
+                    // Create and append the image
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    avatarPreview.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form submission
+        const profileForm = document.getElementById('profileForm');
+        const successMessage = document.getElementById('successMessage');
+        
+        profileForm.addEventListener('submit', function(e) {
+
+            // Get form values
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validation
+            if (password && password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Show success message
+            successMessage.style.display = 'block';
+            
+            // Hide success message after 3 seconds
+            setTimeout(function() {
+                successMessage.style.display = 'none';
+            }, 3000);
+            
+            // In a real application, you would send this data to a server
+            console.log('Profile updated:', {
+                firstName,
+                lastName,
+                email,
+                username,
+                // Additional fields would be included here
+            });
+        });
+
+        // Cancel button
+        const cancelBtn = document.querySelector('.cancel-btn');
+        cancelBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to discard your changes?')) {
+                profileForm.reset();
+                avatarPreview.innerHTML = '<span>?</span>';
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}
