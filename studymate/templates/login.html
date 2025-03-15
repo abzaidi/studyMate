@@ -7,6 +7,8 @@
     <title>Signup - StudyMate</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flash_messages.css' %}">
+
 </head>
 <body>
     <!-- {% if messages %}
@@ -16,6 +18,26 @@
         {% endfor %}
     </ul>
     {% endif %} -->
+    <div id="flashMessageContainer" class="flash-message-container">
+        {% if messages %}
+            {% for message in messages %}
+                {% with message_text=message|safe %}
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // Extract title and message using the '|' separator
+                            let messageParts = "{{ message_text|escapejs }}".split("|");
+                            let title = messageParts.length > 1 ? messageParts[0] : "Notification";
+                            let text = messageParts.length > 1 ? messageParts[1] : messageParts[0];
+    
+                            showFlashMessage("{{ message.tags }}", title, text);
+                        });
+                    </script>
+                {% endwith %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    
 
     {% if page == 'login' %}
     <div class="container">
@@ -120,5 +142,7 @@
     {% include 'footer.html' %}
     <script src="{% static 'js/login.js' %}"></script>
     <script src="{% static 'js/footer.js' %}"></script>
+    <script src="{% static 'js/flash_messages.js' %}"></script>
+
 </body>
 </html>

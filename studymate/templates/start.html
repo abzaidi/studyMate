@@ -22,11 +22,38 @@
     {% if page != 'home' %}
     <link rel="stylesheet" href="{% static 'css/footer.css' %}?v=1">
     {% endif %}
+
+    <link rel="stylesheet" href="{% static 'css/flash_messages.css' %}">
+
+    
 </head>
 
 <body>
 
 {% include 'navbar.html' %}
+
+<!-- Render Django Messages Dynamically -->
+<div id="flashMessageContainer" class="flash-message-container">
+    {% if messages %}
+        {% for message in messages %}
+            {% with message_text=message|safe %}
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        // Extract title and message using the '|' separator
+                        let messageParts = "{{ message_text|escapejs }}".split("|");
+                        let title = messageParts.length > 1 ? messageParts[0] : "Notification";
+                        let text = messageParts.length > 1 ? messageParts[1] : messageParts[0];
+
+                        showFlashMessage("{{ message.tags }}", title, text);
+                    });
+                </script>
+            {% endwith %}
+        {% endfor %}
+    {% endif %}
+</div>
+
+
+
 
 {% block content %}
 
@@ -35,6 +62,8 @@
 
 {% endblock %}
 
+
+<script src="{% static 'js/flash_messages.js' %}"></script>
 </body>
 
 </html>

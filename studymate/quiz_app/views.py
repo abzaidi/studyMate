@@ -19,6 +19,7 @@ from concurrent.futures import ThreadPoolExecutor
 # Create your views here.
 
 def home(request):
+    # messages.success(request, "Welcome to the home page!")
     context = {'page': 'home'}
     return render(request, "home.html", context)
 
@@ -40,22 +41,25 @@ def loginPage(request):
 
         try:
             user = User.objects.get(email=email)
-        except:
-            messages.error(request, "User does not exists.")
-        
+        except User.DoesNotExist:
+            messages.error(request, "User Not Found|The user you are trying to access does not exist.")
+            return redirect('login')
+
         user = authenticate(request, email=email, password=password)
 
         if user:
             login(request, user)
+            messages.success(request, "Login Successful|You have successfully logged in! Welcome back!")
             return redirect('home')
         else:
-            messages.error(request, "email or password is incorrect.")
+            messages.error(request, "Login Error|The email or password you entered is incorrect. Please try again.")
 
     context = {'page': 'login'}
     return render(request, "login.html", context)
 
 
 def logoutUser(request):
+    messages.success(request, "Logout Successful|You have been logged out successfully!")
     logout(request)
     return redirect('login')
 
@@ -74,9 +78,10 @@ def registerPage(request):
             if user is not None:
                 # Specify the custom EmailBackend explicitly
                 login(request, user, backend='quiz_app.backends.EmailBackend')
+                messages.success(request, "Registration Complete|Your registration was successful! Welcome to StudyMate!")
                 return redirect('home')
         else:
-            messages.error(request, "An error occurred during registration.")
+            messages.error(request, "Registration Error|An error occurred during registration. Please try again later.")
     else:
         form = MyUserCreationForm(initial={"email": email_prefill})
     context = {'form': form}
@@ -111,14 +116,14 @@ def profile_view(request):
 
         if profile_form.is_valid():
             profile_form.save()
-            messages.success(request, "Your profile has been updated successfully!")
+            messages.success(request, "Profile Updated|Your profile has been updated successfully!")
         
         if request.POST.get("new_password1") and request.POST.get("new_password2"):
             if password_form.is_valid():
                 user.set_password(password_form.cleaned_data["new_password1"])
                 user.save()
                 update_session_auth_hash(request, user)  # Keep the user logged in
-                messages.success(request, "Password updated successfully!")
+                messages.info(request, "Password Updated|Your password has been updated successfully!")
 
         return redirect("profile")
 
@@ -318,8 +323,8 @@ def send_email(request):
                 ['abubakar.zaidi03@gmail.com'],  # replace with your email
                 fail_silently=False,
             )
-            messages.success(request, "Email sent successfully.")
+            messages.success(request, "Email Sent|Your email has been sent successfully!")
             return redirect('home')
         else:
-            messages.error(request, "Please accept the terms and conditions.")
+            messages.warning(request, "Terms and Conditions Reminder|Please accept the terms and conditions to proceed.")
     return HttpResponse('Failed to send email')
