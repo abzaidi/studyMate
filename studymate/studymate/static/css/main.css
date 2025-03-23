@@ -393,14 +393,13 @@ textarea {
 
 
 /* Uploaded Contents Page */
-
-
-
 .text-container {
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     padding: 2rem 1rem;
     margin-top: 80px;
+    box-sizing: border-box;
 }
 
 .text-h1 {
@@ -413,6 +412,7 @@ textarea {
 .search-container {
     position: relative;
     margin-bottom: 2rem;
+    width: 100%;
 }
 
 .search-icon {
@@ -431,6 +431,7 @@ textarea {
     font-size: 1rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
 }
 
 .search-input:focus {
@@ -439,9 +440,18 @@ textarea {
 }
 
 .texts-container {
+    min-height: 100px;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    width: 100%;
+}
+
+.no-results {
+    text-align: center;
+    color: #9CA3AF;
+    padding: 2rem;
+    font-size: 1rem;
 }
 
 .text-card {
@@ -450,6 +460,7 @@ textarea {
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s;
+    width: 100%;
 }
 
 .text-card:hover {
@@ -461,10 +472,13 @@ textarea {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 1rem;
+    gap: 1rem;
 }
 
 .text-content {
     flex-grow: 1;
+    min-width: 0;
+    max-width: calc(100% - 140px); /* Reserve space for buttons on desktop */
 }
 
 .text-title {
@@ -472,6 +486,7 @@ textarea {
     font-weight: 600;
     color: #111827;
     margin-bottom: 0.5rem;
+    word-break: break-word;
 }
 
 .text-excerpt {
@@ -485,6 +500,8 @@ textarea {
 .action-buttons {
     display: flex;
     gap: 0.5rem;
+    flex-shrink: 0;
+    align-self: flex-start;
 }
 
 .view-btn, .delete-btn {
@@ -498,6 +515,7 @@ textarea {
     border-radius: 0.25rem;
     transition: background-color 0.2s;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 .view-btn {
@@ -519,6 +537,7 @@ textarea {
     gap: 1.5rem;
     color: #6B7280;
     font-size: 0.875rem;
+    flex-wrap: wrap;
 }
 
 .metadata-item {
@@ -533,24 +552,87 @@ textarea {
     color: #6B7280;
 }
 
+/* Media queries for responsiveness */
+@media (max-width: 1200px) {
+    .text-container {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .text-container {
+        padding: 1.5rem 1rem;
+        margin-top: 60px;
+    }
+    
+    .text-h1 {
+        font-size: 1.75rem;
+        margin-top: 40px;
+        
+    }
+    
+    .text-content {
+        max-width: 100%; /* Allow full width on smaller screens */
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+    
+    .action-buttons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
 @media (max-width: 640px) {
-    .container {
+    .text-container {
+        padding: 1rem;
+        margin-top: 50px;
+    }
+    
+    .text-h1 {
+        font-size: 1.5rem;
+        margin-top: 40px;
+    }
+    
+    .search-input {
+        padding: 0.6rem 1rem 0.6rem 2.5rem;
+    }
+    
+    .text-card {
         padding: 1rem;
     }
-
-    h1 {
-        font-size: 1.5rem;
-    }
-
+    
     .metadata {
         flex-direction: column;
         gap: 0.5rem;
     }
+    
+    .text-title {
+        font-size: 1.1rem;
+    }
 }
 
-
-
-
+@media (max-width: 480px) {
+    .text-h1 {
+        font-size: 1.3rem;
+        margin-top: 40px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+    
+    .view-btn, .delete-btn {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
 /* uploaded content detail page */
 
 
