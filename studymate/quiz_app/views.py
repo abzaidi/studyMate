@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from .quiz_creation import generate_quizzes_from_text, process_file
 from .qna_creation import generate_qna_from_text
+from .topics_generation import generate_topics_from_file
 from django.core.files.storage import default_storage
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -144,6 +145,7 @@ def main(request):
     cntx = {'page': 'main'}
     generated_quizzes = ""
     generated_qna = ""
+    generated_topics = request.session.get('generated_topics', [])
     extracted_text = ""
     gcs_url = None
     quiz_gcs_url = None
@@ -167,7 +169,8 @@ def main(request):
                 file_path = default_storage.save(input_file.name, input_file)
                 absolute_path = default_storage.path(file_path)
                 extracted_text = process_file(absolute_path)
-
+                generated_topics = generate_topics_from_file(extracted_text)
+                request.session['generated_topics'] = generated_topics
                 # Save extracted text to database and get its ID
                 extracted_obj = ExtractedText.objects.create(
                     user=request.user, file_name=input_file.name
@@ -226,6 +229,7 @@ def main(request):
         "extracted_text": extracted_text,
         "generated_quizzes": generated_quizzes,
         "generated_qna": generated_qna,
+        "generated_topics": generated_topics,
         "quiz_gcs_url": quiz_gcs_url or (extracted_obj.quiz_gcs_url if extracted_obj else None),
         "qna_gcs_url": qna_gcs_url or (extracted_obj.qna_gcs_url if extracted_obj else None)
     })
