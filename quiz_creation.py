@@ -1,5 +1,4 @@
 import os
-import openai
 from dotenv import load_dotenv, find_dotenv
 from together import Together
 

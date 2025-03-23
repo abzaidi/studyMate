@@ -84,6 +84,13 @@
         const container = document.getElementById('textsContainer');
         container.innerHTML = ""; // Clear previous content
 
+        if (texts.length === 0) {
+        container.innerHTML = `
+            <div class="no-results">No matching results found.</div>
+        `;
+        return;
+    }
+
         texts.forEach(text => {
             const wordCount = countWords(text.extracted_text);
             const textCard = `

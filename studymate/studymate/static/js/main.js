@@ -179,8 +179,3 @@ fetch('footer.html')
       dropZone.style.backgroundColor = '#F9FAFB';
   });
 
-
-  
-// Uploaded content detail page
-
-

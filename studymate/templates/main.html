@@ -1,6 +1,6 @@
 {% extends 'start.html' %}
 {% load static %}
-
+{% load tz %}
 
 {% block content %}
 
@@ -31,10 +31,19 @@
         </section>
 
         {% if extracted_text %}
+        <div class="topic-selection-container {% if generated_topics %}show{% else %}hide{% endif %}" id="topicSelectionContainer">
+            <div class="topic-selection-header">
+                <span class="topic-selection-title">Topics Identified in Your Notes</span>
+                <button class="select-all-button" id="selectAllButton">Select All</button>
+            </div>
+            <div class="topics-container" id="topicsContainer">
+                <!-- Topic buttons will be dynamically inserted here -->
+            </div>
+            <div class="divider"></div>
+        </div>
+
+
         <section class="extraction-section">
-            <!-- <div class="text-box">
-                <textarea id="extractedText" placeholder="Extracted text will appear here..." readonly>{{ extracted_text }}</textarea>
-            </div> -->
             <div class="extracted-text-container">
                 <div class="text-header">
                     <h2>Extracted Text</h2>
@@ -73,8 +82,125 @@
         
         <!-- <section><div id="footer-container"></div></section> -->
     </main>
+
     {% include 'footer.html' %}
-    <script src="{% static 'js/main.js' %}?v=1"></script>
+    <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
     <script src="{% static 'js/footer.js' %}?v=1"></script>
+
+    {% if extracted_text %}
+    {{ generated_topics|json_script:"generated-topics-data" }}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const topics = JSON.parse(document.getElementById('generated-topics-data').textContent);
+            
+            function generateTopicButtons(topics) {
+                const topicsContainer = document.getElementById('topicsContainer');
+                if (!topicsContainer) {
+                    console.error("topicsContainer not found in DOM.");
+                    return;
+                }
+
+                topicsContainer.innerHTML = ''; // Clear existing buttons
+
+                topics.forEach(topic => {
+                    const button = document.createElement('button');
+                    button.className = 'topic-button';
+                    button.textContent = topic;
+                    button.dataset.topic = topic;
+
+                    button.addEventListener('click', () => {
+                        button.classList.toggle('selected');
+                        updateSelectedTopics();
+                    });
+
+                    topicsContainer.appendChild(button);
+
+                    
+                });
+
+                console.log("Topics added to container:", topics);
+
+                const container = document.getElementById('topicSelectionContainer');
+                if (container) {
+                    container.style.display = 'block';
+                } else {
+                    console.error("topicSelectionContainer not found in DOM.");
+                }
+
+            }
+
+            function toggleSelectAll() {
+                const topicButtons = document.querySelectorAll('.topic-button');
+                const selectAllButton = document.getElementById('selectAllButton');
+
+                const allSelected = Array.from(topicButtons).every(btn => btn.classList.contains('selected'));
+
+                topicButtons.forEach(button => {
+                    if (allSelected) {
+                        button.classList.remove('selected');
+                        selectAllButton.textContent = 'Select All';
+                    } else {
+                        button.classList.add('selected');
+                        selectAllButton.textContent = 'Deselect All';
+                    }
+                });
+
+                updateSelectedTopics();
+            }
+
+            function updateSelectedTopics() {
+                const selectedTopics = Array.from(
+                    document.querySelectorAll('.topic-button.selected')
+                ).map(btn => btn.dataset.topic);
+
+                console.log('Selected topics:', selectedTopics);
+
+                const allButtons = document.querySelectorAll('.topic-button');
+                const allSelected = selectedTopics.length === allButtons.length;
+
+                document.getElementById('selectAllButton').textContent = 
+                    allSelected ? 'Deselect All' : 'Select All';
+            }
+
+            document.getElementById('selectAllButton').addEventListener('click', toggleSelectAll);
+
+            // Check if these buttons exist in your template, otherwise comment these two blocks.
+            if (document.getElementById('generateQuizButton')) {
+                document.getElementById('generateQuizButton').addEventListener('click', () => {
+                    const selectedTopics = Array.from(
+                        document.querySelectorAll('.topic-button.selected')
+                    ).map(btn => btn.dataset.topic);
+
+                    if (selectedTopics.length === 0) {
+                        alert('Please select at least one topic to generate a quiz.');
+                        return;
+                    }
+
+                    alert(`Generating quiz for topics: ${selectedTopics.join(', ')}`);
+                });
+            }
+
+            if (document.getElementById('generateQnAButton')) {
+                document.getElementById('generateQnAButton').addEventListener('click', () => {
+                    const selectedTopics = Array.from(
+                        document.querySelectorAll('.topic-button.selected')
+                    ).map(btn => btn.dataset.topic);
+
+                    if (selectedTopics.length === 0) {
+                        alert('Please select at least one topic to generate Q&A.');
+                        return;
+                    }
+
+                    alert(`Generating Q&A for topics: ${selectedTopics.join(', ')}`);
+                });
+            }
+
+            // Generate topic buttons when the page loads
+            generateTopicButtons(topics);
+        });
+    </script>
+{% endif %}
+
 
 {% endblock %}
