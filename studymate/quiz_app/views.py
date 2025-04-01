@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from .quiz_creation import generate_quizzes_from_text, process_file
-from .qna_creation import generate_qna_from_text
+from .quiz_creation import generate_quizzes_from_text, generate_quizzes_from_topics ,process_file
+from .qna_creation import generate_qna_from_text, generate_qna_from_topics
 from .topics_generation import generate_topics_from_file
 from django.core.files.storage import default_storage
 from django.contrib.auth.models import User
@@ -163,6 +163,10 @@ def main(request):
             return HttpResponseNotFound("Extracted text not found.")
 
     if request.method == "POST":
+        selected_topics_str = request.POST.get("selected_topics", "")
+        selected_topics = selected_topics_str.split(',') if selected_topics_str else []
+
+        extracted_text = request.POST.get("extracted_text", "")
         if "upload_file" in request.POST:
             input_file = request.FILES.get("input_file")  
             if input_file:
@@ -186,9 +190,11 @@ def main(request):
                 default_storage.delete(file_path)
 
         elif "generate_quiz" in request.POST:
-            extracted_text = request.POST.get("extracted_text", "")
             if extracted_text:
-                generated_quizzes = generate_quizzes_from_text(extracted_text) or ""
+                if not selected_topics or set(selected_topics) == set(generated_topics):
+                    generated_quizzes = generate_quizzes_from_text(extracted_text) or ""
+                else:
+                    generated_quizzes = generate_quizzes_from_topics(extracted_text, selected_topics) or ""
 
                 if not generated_quizzes:
                     return JsonResponse({"error": "No quiz content generated."}, status=400)
@@ -205,9 +211,11 @@ def main(request):
                 extracted_obj.save()
 
         elif "generate_qa" in request.POST:
-            extracted_text = request.POST.get("extracted_text", "")
             if extracted_text:
-                generated_qna = generate_qna_from_text(extracted_text)
+                if not selected_topics or set(selected_topics) == set(generated_topics):
+                    generated_qna = generate_qna_from_text(extracted_text)
+                else:
+                    generated_qna = generate_qna_from_topics(extracted_text, selected_topics)
 
                 if not generated_qna:
                     return JsonResponse({"error": "No Q&A content generated."}, status=400)
@@ -280,6 +288,7 @@ def user_extracted_texts(request):
         "query": query,
     })
 
+
 @login_required(login_url='login')
 def user_extracted_text_detail(request, text_id):
     try:
@@ -298,6 +307,7 @@ def user_extracted_text_detail(request, text_id):
         }
 
         return render(request, "uploaded_content_detail.html", context)
+
 
     except ExtractedText.DoesNotExist:
         return HttpResponseNotFound("Note not found")

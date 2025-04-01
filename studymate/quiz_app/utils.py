@@ -48,4 +48,5 @@ def fetch_text_from_gcs(gcs_path):
     if not blob.exists():
         return None  # Return None if the file does not exist
 
-    return blob.download_as_text()
+    blob.reload()
+    return blob.download_as_text() 

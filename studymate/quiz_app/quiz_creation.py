@@ -187,3 +187,73 @@ def generate_quizzes_from_text(text, page_size=1000):
         all_quizzes.append(f"\n{quizzes}\n\n")
 
     return "".join(all_quizzes)
+
+
+def generate_quizzes_with_topics(page_text, selected_topics):
+    # System prompt to instruct the model on what it should do, now focusing on the selected topics
+    system_prompt = """You are an AI quiz generator. Your job is to create multiple-choice quizzes 
+        from the provided text, but only focus on the selected topics. The quizzes should test the students' understanding
+        of the important information related to those topics, and ignore irrelevant details.
+        Each quiz should include one question, one correct answer, and three distractor options.
+        Each distractor should be plausible and relevant to the correct answer but could be misleading
+        and different in length. The correct answer should be randomly placed among the four options.
+        The quiz should be clear, concise, and well-structured to test the students' understanding of the text.
+        If there is not enough information to generate a question or correct answer or distractor, 
+        simply do not attempt to generate a quiz from that information.
+        Depending on the amount of important information, generate between 1 to 5 quizzes based on the selected topics.
+        Do not create quizzes with the same information more than one time, try to make each quiz unique
+        from the other quiz. Please ensure the output is clean and simple, without any additional 
+        commentary or explanations. Do not include phrases like 'Here are 2 quizzes based on the provided text:' etc.
+        The format for each quiz should be:\n\n
+        Question: <Question>\n
+        a. <Option 1>\n
+        b. <Option 2>\n
+        c. <Option 3>\n
+        d. <Option 4>\n
+        Correct Answer: <Correct Option>"""
+
+    # Prepare a specific prompt based on the selected topics
+    topics_str = ', '.join(selected_topics)
+    user_prompt = f"Text:\n{page_text}\n\nSelected Topics: {topics_str}\n\nGenerate 1-5 quizzes based on the selected topics."
+
+    # Make the API call to LLaMA 3 for quiz generation
+    response = llama_client.chat.completions.create(
+        model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                "role": "user",
+                "content": user_prompt
+            },
+        ],
+        max_tokens=1000,
+        temperature=0.8,
+        top_p=0.9,
+        top_k=50,
+        repetition_penalty=1.1,
+        stop=["<|eot_id|>","<|eom_id|>"],
+        stream=False
+    )
+
+    # Extract the generated quizzes from the response
+    quizzes = response.choices[0].message.content.strip()
+
+    return quizzes
+
+
+def generate_quizzes_from_topics(extracted_text, selected_topics, page_size=1000):
+    # Split the text into chunks (pages) of a given size
+    pages = [extracted_text[i:i+page_size] for i in range(0, len(extracted_text), page_size)]
+
+    all_quizzes = []
+
+    # Generate quizzes for each page, but only for the selected topics
+    for i, page in enumerate(pages):
+        print(f"Generating quizzes for page {i+1}...")
+        quizzes = generate_quizzes_with_topics(page, selected_topics)
+        all_quizzes.append(f"\n{quizzes}\n\n")
+
+    return "".join(all_quizzes)

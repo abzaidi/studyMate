@@ -73,3 +73,62 @@ def generate_qna_from_text(text, page_size=1000):
         all_qna.append(f"\n{qna}\n\n")
 
     return "".join(all_qna)
+
+
+def generate_qna_with_topics(page_text, selected_topics):
+    # System prompt to instruct the model on what it should do, now focusing on the selected topics
+    system_prompt = """You are an AI system that generates short question-answer pairs from the provided text, 
+        but only focus on the selected topics. The Q&A pairs should summarize key points related to the selected topics,
+        helping students to prepare for exams. The answers should be concise and cover the essential information.
+        If there is not enough information to generate a question or answer, simply do not attempt to generate a Q&A pair.
+        Generate between 1 to 5 question-answer pairs based on the selected topics. Each question-answer pair should be unique,
+        and no information should be repeated. Please ensure the output is clean and simple, without any additional commentary or explanations.
+        The format for each question-answer pair should be:\n\n
+        Q: <Question>\n
+        A: <Answer (one or two paragraphs)>"""
+
+    # Prepare a specific prompt based on the selected topics
+    topics_str = ', '.join(selected_topics)
+    user_prompt = f"Text:\n{page_text}\n\nSelected Topics: {topics_str}\n\nGenerate 1-5 question-answer pairs based on the selected topics."
+
+    # Make the API call to LLaMA 3 for question-answer generation
+    response = llama_client.chat.completions.create(
+        model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                "role": "user",
+                "content": user_prompt
+            },
+        ],
+        max_tokens=1000,
+        temperature=0.8,
+        top_p=0.9,
+        top_k=50,
+        repetition_penalty=1.1,
+        stop=["<|eot_id|>","<|eom_id|>"],
+        stream=False
+    )
+
+    # Extract the generated Q&A from the response
+    qna = response.choices[0].message.content.strip()
+
+    return qna
+
+
+def generate_qna_from_topics(extracted_text, selected_topics, page_size=1000):
+    # Split the text into chunks (pages) of a given size
+    pages = [extracted_text[i:i+page_size] for i in range(0, len(extracted_text), page_size)]
+
+    all_qna = []
+
+    # Generate Q&A for each page, but only for the selected topics
+    for i, page in enumerate(pages):
+        print(f"Generating Q&A for page {i+1}...")
+        qna = generate_qna_with_topics(page, selected_topics)
+        all_qna.append(f"\n{qna}\n\n")
+
+    return "".join(all_qna)
