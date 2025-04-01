@@ -31,6 +31,8 @@
         </section>
 
         {% if extracted_text %}
+        <form method="post">
+        {% csrf_token %}
         <div class="topic-selection-container {% if generated_topics %}show{% else %}hide{% endif %}" id="topicSelectionContainer">
             <div class="topic-selection-header">
                 <span class="topic-selection-title">Topics Identified in Your Notes</span>
@@ -40,8 +42,8 @@
                 <!-- Topic buttons will be dynamically inserted here -->
             </div>
             <div class="divider"></div>
-        </div>
-
+        
+            <input type="hidden" name="selected_topics" id="selectedTopicsInput">
 
         <section class="extraction-section">
             <div class="extracted-text-container">
@@ -51,14 +53,15 @@
                 <textarea class="extracted-text" id="extractedText" name="extracted_text" placeholder="Extracted text will appear here..." spellcheck="false">{{ extracted_text }}</textarea>
             </div>
             <div class="button-group">
-                <form method="post">
-                    {% csrf_token %}
+
                     <input type="hidden" name="text_id" value="{{ text_id }}">
                     <input type="hidden" name="extracted_text" value="{{ extracted_text }}">
                     <button type="submit" class="btn btn-primary" name="generate_quiz">Generate Quiz</button>
                     <button type="submit" class="btn btn-primary" name="generate_qa">Generate Q&A</button>
-                </form>
+                
             </div>
+        </div>
+        </form>
         </section>
         {% endif %}
 
@@ -110,6 +113,7 @@
                     button.dataset.topic = topic;
 
                     button.addEventListener('click', () => {
+                        event.preventDefault();
                         button.classList.toggle('selected');
                         updateSelectedTopics();
                     });
@@ -156,6 +160,9 @@
 
                 console.log('Selected topics:', selectedTopics);
 
+                document.getElementById('selectedTopicsInput').value = selectedTopics.join(',');
+
+
                 const allButtons = document.querySelectorAll('.topic-button');
                 const allSelected = selectedTopics.length === allButtons.length;
 
@@ -163,7 +170,10 @@
                     allSelected ? 'Deselect All' : 'Select All';
             }
 
-            document.getElementById('selectAllButton').addEventListener('click', toggleSelectAll);
+            document.getElementById('selectAllButton').addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent form submission or page reload
+                toggleSelectAll();
+            });
 
             // Check if these buttons exist in your template, otherwise comment these two blocks.
             if (document.getElementById('generateQuizButton')) {
