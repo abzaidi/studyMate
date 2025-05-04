@@ -206,7 +206,7 @@ def write_quizzes_to_file(output_file, quizzes):
 
 # Example usage
 if __name__ == "__main__":
-    input_file = "extracted_texts/extracted_text.txt"  # The input text file with the material
+    input_file = "extracted_texts/extracted_text2.txt"  # The input text file with the material
     output_file = "generated_quizzes.txt"  # The output file to store generated quizzes
     
     # Generate quizzes from the input file
