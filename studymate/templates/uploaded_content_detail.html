@@ -296,7 +296,7 @@
     {% endif %}
     
     <!-- For the Q&A Section, replace with: -->
-    <section class="results-section" id="qna-section">
+    <!-- <section class="results-section" id="qna-section">
         <h2 class="section-title">Generated Q&As</h2>
         <div class="qna-container">
             <div class="qna-item">
@@ -305,7 +305,142 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
+
+
+    {% if qna_text %}
+    <section class="results-section" id="qna-section">
+    <div class="container1">
+        
+    <h1>Subjective Questions</h1>
+        <div id="qna-content" class="content1">
+            <div class="progress-container">
+                <div class="progress-bar" id="qna-progress"></div>
+            </div>
+            
+            <div class="quiz-navigation">
+                <span id="qna-counter">Question 1 of {{ qna_text|length }}</span>
+            </div>
+            
+            <div id="qna-container"></div>
+            
+            <div class="buttons-container">
+                <button id="qna-prev-btn" class="action-button1" disabled>Previous</button>
+                <button id="qna-next-btn" class="action-button1">Next</button>
+                <button id="qna-submit-btn" class="action-button1" style="display: none;">Finish</button>
+            </div>
+            
+            <div id="qna-result-section" class="result-section" style="display: none;">
+                <div class="score" id="qna-score-display">You've completed all Q&As!</div>
+                <button class="action-button1" id="restart-qna-btn">Start Over</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+    {{ qna_text|safe|json_script:"generated-qna-data" }}
+    <script>
+        let qnaData = [];
+        let currentQnA = 0;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const qnaDataElement = document.getElementById('generated-qna-data');
+            try {
+                // Parse twice to handle Django's HTML escaping
+                const parsedData = JSON.parse(JSON.parse(qnaDataElement.textContent));
+                
+                if (!Array.isArray(parsedData)) {
+                    throw new Error('QnA data is not an array');
+                }
+
+                qnaData = parsedData;
+                console.log("Validated QnA data:", qnaData);
+
+                if (qnaData.length > 0) {
+                    loadQnA(0);
+                    updateQnAProgress();
+                    
+                    // Add event listeners
+                    document.getElementById('qna-prev-btn').addEventListener('click', prevQnA);
+                    document.getElementById('qna-next-btn').addEventListener('click', nextQnA);
+                    document.getElementById('qna-submit-btn').addEventListener('click', submitQnA);
+                    document.getElementById('restart-qna-btn').addEventListener('click', resetQnA);
+                }
+
+            } catch (error) {
+                console.error('Error loading QnA data:', error);
+                console.log('Raw data:', qnaDataElement.textContent);
+            }
+        });
+
+        function loadQnA(index) {
+            const qnaContainer = document.getElementById('qna-container');
+            const qna = qnaData[index];
+            
+            document.getElementById('qna-counter').textContent = `Question ${index + 1} of ${qnaData.length}`;
+            
+            const html = `
+                <div class="question-container">
+                    <div class="question-number">Question ${index + 1}</div>
+                    <div class="question-text">${qna.question}</div>
+                </div>
+                <div class="question-container">
+                    <div class="question-number">Answer</div>
+                    <div class="question-text">${qna.answer}</div>
+                </div>
+            `;
+            
+            qnaContainer.innerHTML = html;
+            
+            // Update navigation buttons
+            document.getElementById('qna-prev-btn').disabled = index === 0;
+            
+            if (index === qnaData.length - 1) {
+                document.getElementById('qna-next-btn').style.display = 'none';
+                document.getElementById('qna-submit-btn').style.display = 'block';
+            } else {
+                document.getElementById('qna-next-btn').style.display = 'block';
+                document.getElementById('qna-submit-btn').style.display = 'none';
+            }
+            
+            updateQnAProgress();
+        }
+
+        function nextQnA() {
+            if (currentQnA < qnaData.length - 1) {
+                currentQnA++;
+                loadQnA(currentQnA);
+            }
+        }
+
+        function prevQnA() {
+            if (currentQnA > 0) {
+                currentQnA--;
+                loadQnA(currentQnA);
+            }
+        }
+
+        function updateQnAProgress() {
+            const progressBar = document.getElementById('qna-progress');
+            const progressPercentage = ((currentQnA + 1) / qnaData.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        function submitQnA() {
+            document.getElementById('qna-result-section').style.display = 'block';
+            document.getElementById('qna-submit-btn').style.display = 'none';
+        }
+
+        function resetQnA() {
+            document.getElementById('qna-result-section').style.display = 'none';
+            currentQnA = 0;
+            loadQnA(0);
+            updateQnAProgress();
+        }
+    </script>
+{% endif %}
+
+
 </main>
 {% include 'footer.html' %}
 <script src="{% static 'js/main.js' %}"></script>
