@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from .quiz_creation import generate_quizzes_from_text, generate_quizzes_from_topics ,process_file
+from .quiz_creation import generate_quizzes_from_text, generate_quizzes_from_topics ,process_file, convert_quiz_objects_to_json
 from .qna_creation import generate_qna_from_text, generate_qna_from_topics
 from .topics_generation import generate_topics_from_file
 from django.core.files.storage import default_storage
@@ -193,8 +193,10 @@ def main(request):
             if extracted_text:
                 if not selected_topics or set(selected_topics) == set(generated_topics):
                     generated_quizzes = generate_quizzes_from_text(extracted_text) or ""
+                    generated_quizzes = convert_quiz_objects_to_json(generated_quizzes) or ""
                 else:
                     generated_quizzes = generate_quizzes_from_topics(extracted_text, selected_topics) or ""
+                    generated_quizzes = convert_quiz_objects_to_json(generated_quizzes) or ""
 
                 if not generated_quizzes:
                     return JsonResponse({"error": "No quiz content generated."}, status=400)

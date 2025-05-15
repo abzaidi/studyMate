@@ -65,23 +65,404 @@
         </section>
         {% endif %}
 
+
+
         {% if generated_quizzes %}
-        <section class="quiz-section">
-            <h2>Generated Quizzes</h2>
-            <div class="quiz-box">
-                <pre class="styled-pre">{{ generated_quizzes }}</pre>
+        <div class="container1">
+            <h1>Attempt Quizzes</h1>
+            
+            
+            <div id="quiz-content" class="content1">
+                <div class="progress-container">
+                    <div class="progress-bar" id="quiz-progress"></div>
+                </div>
+                
+                <div class="quiz-navigation">
+                    <span id="quiz-counter">Question 1 of 5</span>
+                    <span id="quiz-timer"></span>
+                </div>
+                
+                <div id="quiz-container"></div>
+                
+                <div class="buttons-container">
+                    <button id="prev-btn" class="action-button1" disabled>Previous</button>
+                    <button id="next-btn" class="action-button1">Next</button>
+                    <button id="submit-btn" class="action-button1" style="display: none;">Submit Quiz</button>
+                </div>
+                
+                <div id="result-section" class="result-section">
+                    <div class="score" id="score-display">Your Score: 0/5</div>
+                    <div class="feedback" id="feedback-message">You've completed the quiz!</div>
+                    <button class="retry-button">Try Again</button>
+                    <button class="action-button1" id="review-answers-btn">Review Answers</button>
+                </div>
             </div>
-        </section>
+            
+        </div>
+
+        {{ generated_quizzes|safe|json_script:"generated-quizzes-data" }}
+    <script>
+
+        let quizData = [];
+        let currentQuizQuestion = 0;
+        let quizSubmitted = false;
+        // Sample quiz data
+        document.addEventListener("DOMContentLoaded", function() {
+        // Safely parse and validate quiz data
+        const quizDataElement = document.getElementById('generated-quizzes-data');
+        try {
+            // Parse twice to handle Django's automatic HTML escaping
+            const parsedData = JSON.parse(JSON.parse(quizDataElement.textContent));
+            
+            // Validate data structure
+            if (!Array.isArray(parsedData)) {
+                throw new Error('Quiz data is not an array');
+            }
+
+            quizData = parsedData.map(q => ({
+                question: q.question,
+                options: q.options,
+                correct: q.correct_option,
+                userAnswer: null
+            }));
+
+            console.log("Validated quiz data:", quizData);
+
+            // Initialize quiz only if we have questions
+            if (quizData.length > 0) {
+                loadQuizQuestion(0);
+                updateQuizProgress();
+                
+                // Add event listeners
+                document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+                document.getElementById('next-btn').addEventListener('click', nextQuestion);
+                document.getElementById('submit-btn').addEventListener('click', submitQuiz);
+                document.querySelector('.retry-button').addEventListener('click', retryQuiz);
+                document.getElementById('review-answers-btn').addEventListener('click', reviewQuiz);
+            } else {
+                console.error('No quiz questions found');
+            }
+
+        } catch (error) {
+            console.error('Error loading quiz data:', error);
+            console.log('Raw data:', quizDataElement.textContent);
+        }
+    });
+
+        function showContent(contentType) {
+            // Update tab styling
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show selected content
+            document.getElementById('quiz-content').style.display = 
+                contentType === 'quiz' ? 'block' : 'none';
+        }
+
+        function loadQuizQuestion(index) {
+            const quizContainer = document.getElementById('quiz-container');
+            const question = quizData[index];
+            
+            document.getElementById('quiz-counter').textContent = `Question ${index + 1} of ${quizData.length}`;
+            
+            let html = `
+                <div class="quiz-section1">
+                    <div class="question-container">
+                        <div class="question-number">Question ${index + 1}</div>
+                        <div class="question-text">${question.question}</div>
+                        <ul class="options-list">
+            `;
+            
+            question.options.forEach((option, i) => {
+                const optionLetter = String.fromCharCode(97 + i); // a, b, c, d
+                let optionClass = 'option-item';
+                
+                if (quizSubmitted) {
+                    if (i === question.correct) {
+                        optionClass += ' correct';
+                    } else if (question.userAnswer === i && i !== question.correct) {
+                        optionClass += ' incorrect';
+                    }
+                } else if (question.userAnswer === i) {
+                    optionClass += ' selected';
+                }
+                
+                html += `
+                    <li class="${optionClass}" onclick="selectOption(${index}, ${i})">
+                        <span class="option-letter">${optionLetter}.</span>
+                        <span>${option}</span>
+                        ${quizSubmitted && i === question.correct ? '<span class="answer-indicator correct-indicator">✓ Correct</span>' : ''}
+                        ${quizSubmitted && question.userAnswer === i && i !== question.correct ? '<span class="answer-indicator incorrect-indicator">✗ Incorrect</span>' : ''}
+                    </li>
+                `;
+            });
+            
+            html += `
+                    </ul>
+                </div>
+            </div>
+            `;
+            
+            quizContainer.innerHTML = html;
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = index === 0;
+            
+            if (index === quizData.length - 1) {
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('submit-btn').style.display = quizSubmitted ? 'none' : 'block';
+            } else {
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('submit-btn').style.display = 'none';
+            }
+            
+            updateQuizProgress();
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            if (quizSubmitted) return;
+            
+            quizData[questionIndex].userAnswer = optionIndex;
+            loadQuizQuestion(currentQuizQuestion);
+        }
+
+        function nextQuestion() {
+            if (currentQuizQuestion < quizData.length - 1) {
+                currentQuizQuestion++;
+                loadQuizQuestion(currentQuizQuestion);
+            }
+        }
+
+        
+
+        function prevQuestion() {
+        if (currentQuizQuestion > 0) {
+            currentQuizQuestion--;
+            loadQuizQuestion(currentQuizQuestion);
+        }
+        // Always enable next button when going back
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+        function updateQuizProgress() {
+            const progressBar = document.getElementById('quiz-progress');
+            const answeredCount = quizData.filter(q => q.userAnswer !== null).length;
+            const progressPercentage = (answeredCount / quizData.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        function submitQuiz() {
+            quizSubmitted = true;
+            
+            // Calculate score
+            let score = 0;
+            quizData.forEach(question => {
+                if (question.userAnswer === question.correct) {
+                    score++;
+                }
+            });
+            
+            // Display result section
+            const resultSection = document.getElementById('result-section');
+            resultSection.style.display = 'block';
+            
+            document.getElementById('score-display').textContent = `Your Score: ${score}/${quizData.length}`;
+            
+            // Set feedback message based on score
+            const feedbackMessage = document.getElementById('feedback-message');
+            const percentage = (score / quizData.length) * 100;
+            
+            if (percentage >= 80) {
+                feedbackMessage.textContent = "Excellent! You have a strong understanding of the material.";
+            } else if (percentage >= 60) {
+                feedbackMessage.textContent = "Good job! You have a decent grasp of the concepts.";
+            } else {
+                feedbackMessage.textContent = "You might want to review the material again to improve your understanding.";
+            }
+            
+            // Hide the submit button
+            document.getElementById('submit-btn').style.display = 'none';
+            
+            // Reload the current question to show correct/incorrect answers
+            loadQuizQuestion(currentQuizQuestion);
+        }
+
+        function retryQuiz() {
+            quizSubmitted = false;
+            
+            // Reset user answers
+            quizData.forEach(question => {
+                question.userAnswer = null;
+            });
+            
+            // Hide result section
+            document.getElementById('result-section').style.display = 'none';
+            
+            // Reset to first question
+            currentQuizQuestion = 0;
+            loadQuizQuestion(0);
+            updateQuizProgress();
+        }
+
+        function reviewQuiz() {
+        // Enable navigation through all questions
+        currentQuizQuestion = 0;
+        quizSubmitted = true; // Keep submitted state
+        loadQuizQuestion(currentQuizQuestion);
+        
+        // Show navigation buttons
+        document.getElementById('prev-btn').style.display = 'block';
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('submit-btn').style.display = 'none';
+        }
+        </script>
         {% endif %}
 
-        {% if generated_qna %}
+   
+
+
+        <!-- {% if generated_qna %}
         <section class="qna-section">
             <h2>Generated Q&A</h2>
             <div class="qna-box">
                 <pre class="styled-pre">{{ generated_qna }}</pre>
             </div>
         </section>
-        {% endif %}
+        {% endif %} -->
+
+
+        {% if generated_qna %}
+<section class="qna-section">
+    <h2>Subjective Questions</h2>
+    <div class="container1">
+        <div id="qna-content" class="content1">
+            <div class="progress-container">
+                <div class="progress-bar" id="qna-progress"></div>
+            </div>
+            
+            <div class="quiz-navigation">
+                <span id="qna-counter">Question 1 of {{ generated_qna|length }}</span>
+            </div>
+            
+            <div id="qna-container"></div>
+            
+            <div class="buttons-container">
+                <button id="qna-prev-btn" class="action-button1" disabled>Previous</button>
+                <button id="qna-next-btn" class="action-button1">Next</button>
+                <button id="qna-submit-btn" class="action-button1" style="display: none;">Finish</button>
+            </div>
+            
+            <div id="qna-result-section" class="result-section" style="display: none;">
+                <div class="score" id="qna-score-display">You've completed all Q&As!</div>
+                <button class="action-button1" id="restart-qna-btn">Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    {{ generated_qna|safe|json_script:"generated-qna-data" }}
+    <script>
+        let qnaData = [];
+        let currentQnA = 0;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const qnaDataElement = document.getElementById('generated-qna-data');
+            try {
+                // Parse twice to handle Django's HTML escaping
+                const parsedData = JSON.parse(JSON.parse(qnaDataElement.textContent));
+                
+                if (!Array.isArray(parsedData)) {
+                    throw new Error('QnA data is not an array');
+                }
+
+                qnaData = parsedData;
+                console.log("Validated QnA data:", qnaData);
+
+                if (qnaData.length > 0) {
+                    loadQnA(0);
+                    updateQnAProgress();
+                    
+                    // Add event listeners
+                    document.getElementById('qna-prev-btn').addEventListener('click', prevQnA);
+                    document.getElementById('qna-next-btn').addEventListener('click', nextQnA);
+                    document.getElementById('qna-submit-btn').addEventListener('click', submitQnA);
+                    document.getElementById('restart-qna-btn').addEventListener('click', resetQnA);
+                }
+
+            } catch (error) {
+                console.error('Error loading QnA data:', error);
+                console.log('Raw data:', qnaDataElement.textContent);
+            }
+        });
+
+        function loadQnA(index) {
+            const qnaContainer = document.getElementById('qna-container');
+            const qna = qnaData[index];
+            
+            document.getElementById('qna-counter').textContent = `Question ${index + 1} of ${qnaData.length}`;
+            
+            const html = `
+                <div class="question-container">
+                    <div class="question-number">Question ${index + 1}</div>
+                    <div class="question-text">${qna.question}</div>
+                </div>
+                <div class="question-container">
+                    <div class="question-number">Answer</div>
+                    <div class="question-text">${qna.answer}</div>
+                </div>
+            `;
+            
+            qnaContainer.innerHTML = html;
+            
+            // Update navigation buttons
+            document.getElementById('qna-prev-btn').disabled = index === 0;
+            
+            if (index === qnaData.length - 1) {
+                document.getElementById('qna-next-btn').style.display = 'none';
+                document.getElementById('qna-submit-btn').style.display = 'block';
+            } else {
+                document.getElementById('qna-next-btn').style.display = 'block';
+                document.getElementById('qna-submit-btn').style.display = 'none';
+            }
+            
+            updateQnAProgress();
+        }
+
+        function nextQnA() {
+            if (currentQnA < qnaData.length - 1) {
+                currentQnA++;
+                loadQnA(currentQnA);
+            }
+        }
+
+        function prevQnA() {
+            if (currentQnA > 0) {
+                currentQnA--;
+                loadQnA(currentQnA);
+            }
+        }
+
+        function updateQnAProgress() {
+            const progressBar = document.getElementById('qna-progress');
+            const progressPercentage = ((currentQnA + 1) / qnaData.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        function submitQnA() {
+            document.getElementById('qna-result-section').style.display = 'block';
+            document.getElementById('qna-submit-btn').style.display = 'none';
+        }
+
+        function resetQnA() {
+            document.getElementById('qna-result-section').style.display = 'none';
+            currentQnA = 0;
+            loadQnA(0);
+            updateQnAProgress();
+        }
+    </script>
+</section>
+{% endif %}
         
         <!-- <section><div id="footer-container"></div></section> -->
     </main>
@@ -96,6 +477,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const topics = JSON.parse(document.getElementById('generated-topics-data').textContent);
+
             
             function generateTopicButtons(topics) {
                 const topicsContainer = document.getElementById('topicsContainer');
@@ -211,6 +593,7 @@
         });
     </script>
 {% endif %}
+
 
 
 {% endblock %}
