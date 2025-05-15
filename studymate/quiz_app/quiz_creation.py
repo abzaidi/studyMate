@@ -298,19 +298,17 @@ def generate_quizzes_with_topics(page_text, selected_topics):
         Depending on the amount of important information, generate between 1 to 5 quizzes based on the selected topics.
         Do not create quizzes with the same information more than one time, try to make each quiz unique
         from the other quiz. Please ensure the output is clean and simple, without any additional 
-        commentary or explanations. Do not include phrases like 'Here are 2 quizzes based on the provided text:' etc.
-        The format for each quiz should be:\n\n
-        Question: <Question>\n
-        a. <Option 1>\n
-        b. <Option 2>\n
-        c. <Option 3>\n
-        d. <Option 4>\n
-        Correct Answer: <Correct Option>"""
+        commentary or explanations. Each question must have exactly four options and a correct option index (0-3).
+        Return the quizzes in a JSON format where each quiz has 'question', 'options' (list of 4 options), and 'correct_option' (integer index of correct option)."""
 
     # Prepare a specific prompt based on the selected topics
     topics_str = ', '.join(selected_topics)
     user_prompt = f"Text:\n{page_text}\n\nSelected Topics: {topics_str}\n\nGenerate 1-5 quizzes based on the selected topics."
 
+    response_format = {
+        "type": "json_object",
+        "schema": QuizzesResponse.model_json_schema()
+    }
     # Make the API call to LLaMA 3 for quiz generation
     response = llama_client.chat.completions.create(
         model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
@@ -324,6 +322,7 @@ def generate_quizzes_with_topics(page_text, selected_topics):
                 "content": user_prompt
             },
         ],
+        response_format=response_format,
         max_tokens=1000,
         temperature=0.8,
         top_p=0.9,
@@ -334,21 +333,26 @@ def generate_quizzes_with_topics(page_text, selected_topics):
     )
 
     # Extract the generated quizzes from the response
-    quizzes = response.choices[0].message.content.strip()
-
-    return quizzes
+    try:
+        response_content = response.choices[0].message.content.strip()
+        quizzes_json = QuizzesResponse.model_validate_json(response_content)
+        return quizzes_json.quizzes  # Return a list of Quiz objects
+    except Exception as e:
+        print(f"Error parsing quizzes response: {e}")
+        return []
 
 
 def generate_quizzes_from_topics(extracted_text, selected_topics, page_size=1000):
     # Split the text into chunks (pages) of a given size
-    pages = [extracted_text[i:i+page_size] for i in range(0, len(extracted_text), page_size)]
 
+    chunks = [extracted_text[i:i+page_size] for i in range(0, len(extracted_text), page_size)]
     all_quizzes = []
 
-    # Generate quizzes for each page, but only for the selected topics
-    for i, page in enumerate(pages):
-        print(f"Generating quizzes for page {i+1}...")
-        quizzes = generate_quizzes_with_topics(page, selected_topics)
-        all_quizzes.append(f"\n{quizzes}\n\n")
+    for i, chunk in enumerate(chunks):
+        print(f"Generating quizzes for chunk {i+1}...")
+        quizzes = generate_quizzes_with_topics(chunk, selected_topics)
+        all_quizzes.extend(quizzes)
 
-    return "".join(all_quizzes)
+    return all_quizzes
+
+

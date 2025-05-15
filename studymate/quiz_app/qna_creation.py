@@ -193,52 +193,71 @@ def generate_qna_with_topics(page_text, selected_topics):
         If there is not enough information to generate a question or answer, simply do not attempt to generate a Q&A pair.
         Generate between 1 to 5 question-answer pairs based on the selected topics. Each question-answer pair should be unique,
         and no information should be repeated. Please ensure the output is clean and simple, without any additional commentary or explanations.
-        The format for each question-answer pair should be:\n\n
-        Q: <Question>\n
-        A: <Answer (one or two paragraphs)>"""
+         Use clean JSON format with 'qna_pairs' array containing objects with 'question' and 'answer'
+        
+        Return ONLY valid JSON in this structure:
+        {
+            "qna_pairs": [
+                {
+                    "question": "clear question text",
+                    "answer": "concise answer text"
+                },
+                // more pairs...
+            ]
+        }"""
 
     # Prepare a specific prompt based on the selected topics
     topics_str = ', '.join(selected_topics)
     user_prompt = f"Text:\n{page_text}\n\nSelected Topics: {topics_str}\n\nGenerate 1-5 question-answer pairs based on the selected topics."
 
+    response_format = {
+        "type": "json_object",
+        "schema": QnAResponse.model_json_schema()
+    }
     # Make the API call to LLaMA 3 for question-answer generation
-    response = llama_client.chat.completions.create(
-        model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-        messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": user_prompt
-            },
-        ],
-        max_tokens=1000,
-        temperature=0.8,
-        top_p=0.9,
-        top_k=50,
-        repetition_penalty=1.1,
-        stop=["<|eot_id|>","<|eom_id|>"],
-        stream=False
-    )
+    try:
+        response = llama_client.chat.completions.create(
+            model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": user_prompt
+                },
+            ],
+            response_format=response_format,
+            max_tokens=1000,
+            temperature=0.8,
+            top_p=0.9,
+            top_k=50,
+            repetition_penalty=1.1,
+            stop=["<|eot_id|>","<|eom_id|>"],
+            stream=False
+        )
+        response_content = response.choices[0].message.content.strip()
+        qna_response = QnAResponse.model_validate_json(response_content)
+        return qna_response.qna_pairs
 
-    # Extract the generated Q&A from the response
-    qna = response.choices[0].message.content.strip()
-
-    return qna
+    except Exception as e:
+        print(f"Error generating Q&A: {e}")
+        # Fallback to text parsing if JSON fails
+        return parse_text_fallback(response.choices[0].message.content.strip())
 
 
 def generate_qna_from_topics(extracted_text, selected_topics, page_size=1000):
     # Split the text into chunks (pages) of a given size
-    pages = [extracted_text[i:i+page_size] for i in range(0, len(extracted_text), page_size)]
 
+    chunks = [extracted_text[i:i+page_size] for i in range(0, len(extracted_text), page_size)]
     all_qna = []
 
-    # Generate Q&A for each page, but only for the selected topics
-    for i, page in enumerate(pages):
-        print(f"Generating Q&A for page {i+1}...")
-        qna = generate_qna_with_topics(page, selected_topics)
-        all_qna.append(f"\n{qna}\n\n")
+    for chunk in chunks:
+        try:
+            qna_pairs = generate_qna_with_topics(chunk, selected_topics)
+            all_qna.extend(qna_pairs)
+        except Exception as e:
+            print(f"Error processing chunk: {e}")
 
-    return "".join(all_qna)
+    return convert_qna_objects_to_json(all_qna)

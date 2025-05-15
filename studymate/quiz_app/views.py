@@ -196,6 +196,7 @@ def main(request):
                     generated_quizzes = convert_quiz_objects_to_json(generated_quizzes) or ""
                 else:
                     generated_quizzes = generate_quizzes_from_topics(extracted_text, selected_topics) or ""
+                    generated_quizzes = convert_quiz_objects_to_json(generated_quizzes) or ""
 
                 if not generated_quizzes:
                     return JsonResponse({"error": "No quiz content generated."}, status=400)
