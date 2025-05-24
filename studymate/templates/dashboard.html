@@ -1,0 +1,376 @@
+{% extends 'start.html' %}
+{% load static %}
+{% load tz %}
+
+{% block content %}
+
+
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="app-logo">StudyMate</a>
+            <div class="avatar-preview">
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="Avatar">
+                {% else %}
+                    <span>?</span>
+                {% endif %}
+            </div>
+            <div class="user-name">{{ user.name }}</div>
+            <div class="user-email">{{ user.email }}</div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard' %}" class="sidebar-nav-item active">
+                <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="9"></rect>
+                    <rect x="14" y="3" width="7" height="5"></rect>
+                    <rect x="14" y="12" width="7" height="9"></rect>
+                    <rect x="3" y="16" width="7" height="5"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            
+            <a href="{% url 'profile' %}" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>User Profile</span>
+            </a>
+            
+            <a href="{% url 'main' %}" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Upload Notes</span>
+            </a>
+            
+            <a href="{% url 'uploaded_content' %}" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Uploaded Content</span>
+            </a>
+        </nav>
+        
+        <a class="logout-btn" href="{% url 'logout' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Log Out</span>
+        </a>
+    </aside>
+
+    <div class="dashboard-main-content">
+
+        <!-- Main Content -->
+        <main class="dashboard-container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Study Dashboard</h1>
+                <div class="date-filter">
+                    <span>Filter by:</span>
+                    <select id="timeFilter">
+                        <option value="week">This Week</option>
+                        <option value="month" selected>This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Year</option>
+                        <option value="all">All Time</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon notes-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-number" id="notesCount">{{ notes_count }}</div>
+                    <div class="stat-label">Notes Uploaded</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon quiz-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                        </svg>
+                    </div>
+                    <div class="stat-number" id="quizCount">{{ quizzes_count }}</div>
+                    <div class="stat-label">Quizzes Generated</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon qna-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            <path d="M12 7v.01"></path>
+                            <path d="M12 11v4"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-number" id="qnaCount">{{ qna_count }}</div>
+                    <div class="stat-label">Q&As Generated</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon time-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-number" id="studyTime">36</div>
+                    <div class="stat-label">Study Hours</div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Table -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Activity</h2>
+                    <a href="{% url 'uploaded_content' %}" class="view-all">View All</a>
+                </div>
+                
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>File Name</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        {% for text in split_entries %}
+                        {% if text.type == "text" %}
+                        <tr>
+                            <td>
+                                <div class="activity-type">
+                                    <span class="activity-badge badge-note">Note</span>
+                                    <span>Note Uploaded</span>
+                                </div>
+                            </td>
+                            <td>{{ text.file_name }}</td>
+                            <td>{{ text.uploaded_at }}</td>
+                            <td><a href="{% url 'uploaded_content_detail' text.id %}" style="color: #7C3AED;">View</a></td>
+                        </tr>
+                        {% elif text.type == "quiz" %}
+                        <tr>
+                            <td>
+                                <div class="activity-type">
+                                    <span class="activity-badge badge-quiz">Quiz</span>
+                                    <span>Quiz Generated</span>
+                                </div>
+                            </td>
+                            <td>{{ text.file_name }}</td>
+                            <td>{{ text.uploaded_at }}</td>
+                            <td><a href="{% url 'uploaded_content_detail' text.id %}" style="color: #7C3AED;">View</a></td>
+                        </tr>
+                        {% elif text.type == "qna" %}
+                        <tr>
+                            <td>
+                                <div class="activity-type">
+                                    <span class="activity-badge badge-qna">Q&A</span>
+                                    <span>Q&A Generated</span>
+                                </div>
+                            </td>
+                            <td>{{ text.file_name }}</td>
+                            <td>{{ text.uploaded_at }}</td>
+                            <td><a href="{% url 'uploaded_content_detail' text.id %}" style="color: #7C3AED;">View</a></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        <!-- <tr>
+                            <td>
+                                <div class="activity-type">
+                                    <span class="activity-badge badge-quiz">Quiz</span>
+                                    <span>Quiz Generated</span>
+                                </div>
+                            </td>
+                            <td>Biology Quiz #3</td>
+                            <td>Apr 25, 2025</td>
+                            <td><a href="#" style="color: #7C3AED;">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="activity-type">
+                                    <span class="activity-badge badge-qna">Q&A</span>
+                                    <span>Q&A Generated</span>
+                                </div>
+                            </td>
+                            <td>Chemistry Concepts</td>
+                            <td>Apr 24, 2025</td>
+                            <td><a href="#" style="color: #7C3AED;">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="activity-type">
+                                    <span class="activity-badge badge-note">Note</span>
+                                    <span>Note Uploaded</span>
+                                </div>
+                            </td>
+                            <td>Math Formulas.pdf</td>
+                            <td>Apr 22, 2025</td>
+                            <td><a href="#" style="color: #7C3AED;">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="activity-type">
+                                    <span class="activity-badge badge-quiz">Quiz</span>
+                                    <span>Quiz Generated</span>
+                                </div>
+                            </td>
+                            <td>History Timeline Quiz</td>
+                            <td>Apr 20, 2025</td>
+                            <td><a href="#" style="color: #7C3AED;">View</a></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Quick Actions</h2>
+                </div>
+                
+                <div class="quick-actions">
+                    <a href="{% url 'main' %}">
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3 class="action-title">Upload Notes</h3>
+                        <p class="action-desc">Add new study materials</p>
+                    </div>
+                    </a>
+                    
+                    <a href="{% url 'main' %}">
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                        </div>
+                        <h3 class="action-title">Generate Quiz</h3>
+                        <p class="action-desc">Create new quiz from notes</p>
+                    </div>
+                    </a>
+                    
+                    <a href="{% url 'main' %}">
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <h3 class="action-title">Create Q&A</h3>
+                        <p class="action-desc">Generate practice questions</p>
+                    </div>
+                    </a>
+                    
+                    <a href="{% url 'uploaded_content' %}">
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                        </div>
+                        <h3 class="action-title">View Progress</h3>
+                        <p class="action-desc">Track your study journey</p>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    {% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
+    <script src="{% static 'js/footer.js' %}?v=1"></script>
+    <script>
+        // Initialize charts when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+
+
+            // Setup time filter change event
+            document.getElementById('timeFilter').addEventListener('change', function() {
+                updateDashboardData(this.value);
+            });
+
+            // Simulate data updates when filter changes
+            function updateDashboardData(timeFrame) {
+                let stats = {
+                    week: { notes: 5, quizzes: 7, qnas: 12, time: 8 },
+                    month: { notes: 15, quizzes: 24, qnas: 48, time: 36 },
+                    quarter: { notes: 42, quizzes: 67, qnas: 124, time: 89 },
+                    year: { notes: 153, quizzes: 245, qnas: 378, time: 312 },
+                    all: { notes: 205, quizzes: 346, qnas: 528, time: 487 }
+                };
+
+                // Get the data for the selected time frame
+                const data = stats[timeFrame];
+                
+                // Update the dashboard numbers with animation
+                animateCounter('notesCount', data.notes);
+                animateCounter('quizCount', data.quizzes);
+                animateCounter('qnaCount', data.qnas);
+                animateCounter('studyTime', data.time);
+                
+                // Update chart data would go here in a real implementation
+                // For now, we'll just leave the charts as is
+            }
+
+            // Animate counter from current value to target value
+            function animateCounter(elementId, targetValue) {
+                const element = document.getElementById(elementId);
+                const currentValue = parseInt(element.innerText);
+                const diff = targetValue - currentValue;
+                const duration = 1000; // Animation duration in ms
+                const steps = 30; // Number of steps in the animation
+                const stepValue = diff / steps;
+                let currentStep = 0;
+                
+                const interval = setInterval(() => {
+                    currentStep++;
+                    const newValue = Math.round(currentValue + (stepValue * currentStep));
+                    element.innerText = newValue;
+                    
+                    if (currentStep >= steps) {
+                        element.innerText = targetValue;
+                        clearInterval(interval);
+                    }
+                }, duration / steps);
+            }
+        });
+    </script>
+
+
+
+
+{% endblock %}

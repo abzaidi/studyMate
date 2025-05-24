@@ -24,6 +24,64 @@ def home(request):
     context = {'page': 'home'}
     return render(request, "home.html", context)
 
+@login_required(login_url='login')
+def dashboard(request):
+    if request.user.is_authenticated:
+        split_entries = []
+        # Get all ExtractedText entries ordered by latest first
+        extracted_texts = ExtractedText.objects.filter(user=request.user).order_by('-uploaded_at')
+        for et in extracted_texts:
+            # Text entry (always present)
+            text_entry = {
+                'id': et.id,
+                'file_name': et.file_name,
+                'uploaded_at': et.uploaded_at,
+                'gcs_url': et.gcs_url,
+                'type': 'text'
+            }
+            split_entries.append(text_entry)
+            if len(split_entries) >= 5:
+                break
+            
+            # Quiz entry (if present)
+            if et.quiz_gcs_url:
+                quiz_entry = {
+                    'id': et.id,
+                    'file_name': et.file_name,
+                    'uploaded_at': et.uploaded_at,
+                    'quiz_gcs_url': et.quiz_gcs_url,
+                    'type': 'quiz'
+                }
+                split_entries.append(quiz_entry)
+                if len(split_entries) >= 5:
+                    break
+            
+            # QnA entry (if present)
+            if et.qna_gcs_url:
+                qna_entry = {
+                    'id': et.id,
+                    'file_name': et.file_name,
+                    'uploaded_at': et.uploaded_at,
+                    'qna_gcs_url': et.qna_gcs_url,
+                    'type': 'qna'
+                }
+                split_entries.append(qna_entry)
+                if len(split_entries) >= 5:
+                    break
+        
+        # Ensure we only take up to five entries
+        split_entries = split_entries[:5]
+        notes_count = ExtractedText.objects.filter(user=request.user).count()
+        quizzes_count = ExtractedText.objects.filter(user=request.user, quiz_gcs_url__isnull=False).count()
+        qna_count = ExtractedText.objects.filter(user=request.user, qna_gcs_url__isnull=False).count()
+        context = {
+            'page': 'dashboard',
+            'split_entries': split_entries,
+            'notes_count': notes_count,
+            'quizzes_count': quizzes_count,
+            'qna_count': qna_count,
+        }
+    return render(request, "dashboard.html", context)
 
 def redirect_to_register(request):
     email = request.GET.get("email", "")
@@ -34,7 +92,7 @@ def redirect_to_register(request):
 def loginPage(request):
 
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('dashboard')
 
     if request.method == 'POST':
         email = request.POST.get('email').lower()
@@ -51,7 +109,7 @@ def loginPage(request):
         if user:
             login(request, user)
             messages.success(request, "Login Successful|You have successfully logged in! Welcome back!")
-            return redirect('home')
+            return redirect('dashboard')
         else:
             messages.error(request, "Login Error|The email or password you entered is incorrect. Please try again.")
 
