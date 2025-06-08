@@ -12,17 +12,19 @@ import re
 import ast
 import json
 
-_ = load_dotenv(find_dotenv())
+load_dotenv(find_dotenv())
 
 
 llama_client = Together(api_key=os.environ.get('TOGETHER_API_KEY'))
 
 google_credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
-if google_credentials_path is None:
+if not google_credentials_path:
     raise ValueError("The environment variable 'GOOGLE_APPLICATION_CREDENTIALS' is not set.")
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = google_credentials_path
+# Explicitly assign it again just to be sure it's set for any subprocesses
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = google_credentials_path
+
 
 def convert_pdf_to_images(pdf_path):
     try:
