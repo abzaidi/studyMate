@@ -12,6 +12,7 @@ urlpatterns = [
     path("register/", views.registerPage, name="register"),
     path('profile/', views.profile_view, name='profile'),
     path("main/", views.main, name="main"),
+    path("dashboard/", views.dashboard, name="dashboard"),
     path("uploaded_content/", views.user_extracted_texts, name="uploaded_content"),
     path("uploaded_content/<int:text_id>/", views.user_extracted_text_detail, name="uploaded_content_detail"),
     path('uploaded_content/delete/<int:text_id>/', views.delete_uploaded_content, name='delete_uploaded_content'),
