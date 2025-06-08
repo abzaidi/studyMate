@@ -7,15 +7,19 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.utils.html import strip_tags
 from django.template.loader import render_to_string
-from django.http import JsonResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+
 
 from .models import User, ExtractedText, UserProfile
 from .forms import MyUserCreationForm, UserProfileForm, CustomPasswordChangeForm
 from .utils import upload_to_gcs, fetch_text_from_gcs
 from concurrent.futures import ThreadPoolExecutor
+
+
 
 # Create your views here.
 
@@ -382,6 +386,7 @@ def delete_uploaded_content(request, text_id):
         return JsonResponse({"success": True})
     return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
 
+
 def send_email(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -390,15 +395,40 @@ def send_email(request):
         terms = request.POST.get('terms')
 
         if terms:
-            send_mail(
-                f'Message from {name}',
-                message,
-                email,
-                ['abubakar.zaidi03@gmail.com'],  # replace with your email
-                fail_silently=False,
+            subject = f"📨 Message from {name}"
+            from_email = 'ma2003110@gmail.com' 
+            to_email = ['abubakar.zaidi03@gmail.com']
+
+            html_content = f"""
+            <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
+                <h2 style="color: #007bff;">New Message from StudyMate</h2>
+                <p style="font-size: 16px;"><strong>Name:</strong> {name}</p>
+                <p style="font-size: 16px;"><strong>Email:</strong> <a href="mailto:{email}">{email}</a></p>
+                <p style="font-size: 16px;"><strong>Message:</strong></p>
+                <div style="border-left: 4px solid #007bff; padding-left: 15px; margin-top: 10px; color: #444;">
+                    {message}
+                </div>
+                <br>
+                <p style="font-size: 12px; color: #aaa;">This message was sent via studymate's contact form.</p>
+            </div>
+            """
+
+            text_content = strip_tags(html_content)
+
+            email_msg = EmailMultiAlternatives(
+                subject=subject,
+                body=text_content,
+                from_email=from_email,
+                to=to_email,
+                reply_to=[email]
             )
-            messages.success(request, "Email Sent|Your email has been sent successfully!")
+            email_msg.attach_alternative(html_content, "text/html")
+            email_msg.send(fail_silently=False)
+
+            messages.success(request, "Email Sent | Your email has been sent successfully!")
             return redirect('home')
+
         else:
-            messages.warning(request, "Terms and Conditions Reminder|Please accept the terms and conditions to proceed.")
+            messages.warning(request, "Terms and Conditions Reminder | Please accept the terms and conditions to proceed.")
+
     return HttpResponse('Failed to send email')
