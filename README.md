@@ -28,7 +28,11 @@ maximum accuracy.
 
 ## Architecture
 
-![Logo](https://i.imgur.com/366E7jo.png)
+![Logo](https://i.imgur.com/TItCFXj.png)
+
+## Data Flow Diagram
+
+![Logo](https://i.imgur.com/cjGIdeq.png)
 
 ## Run Locally
 

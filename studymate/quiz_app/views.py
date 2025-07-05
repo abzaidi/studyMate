@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from .quiz_creation import generate_quizzes_from_text, generate_quizzes_from_topics ,process_file
+from .quiz_creation import generate_quizzes_from_text, generate_quizzes_from_topics ,process_file, convert_quiz_objects_to_json
 from .qna_creation import generate_qna_from_text, generate_qna_from_topics
 from .topics_generation import generate_topics_from_file
 from django.core.files.storage import default_storage
@@ -7,15 +7,19 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.utils.html import strip_tags
 from django.template.loader import render_to_string
-from django.http import JsonResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseNotFound, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+
 
 from .models import User, ExtractedText, UserProfile
 from .forms import MyUserCreationForm, UserProfileForm, CustomPasswordChangeForm
 from .utils import upload_to_gcs, fetch_text_from_gcs
 from concurrent.futures import ThreadPoolExecutor
+
+
 
 # Create your views here.
 
@@ -24,6 +28,64 @@ def home(request):
     context = {'page': 'home'}
     return render(request, "home.html", context)
 
+@login_required(login_url='login')
+def dashboard(request):
+    if request.user.is_authenticated:
+        split_entries = []
+        # Get all ExtractedText entries ordered by latest first
+        extracted_texts = ExtractedText.objects.filter(user=request.user).order_by('-uploaded_at')
+        for et in extracted_texts:
+            # Text entry (always present)
+            text_entry = {
+                'id': et.id,
+                'file_name': et.file_name,
+                'uploaded_at': et.uploaded_at,
+                'gcs_url': et.gcs_url,
+                'type': 'text'
+            }
+            split_entries.append(text_entry)
+            if len(split_entries) >= 5:
+                break
+            
+            # Quiz entry (if present)
+            if et.quiz_gcs_url:
+                quiz_entry = {
+                    'id': et.id,
+                    'file_name': et.file_name,
+                    'uploaded_at': et.uploaded_at,
+                    'quiz_gcs_url': et.quiz_gcs_url,
+                    'type': 'quiz'
+                }
+                split_entries.append(quiz_entry)
+                if len(split_entries) >= 5:
+                    break
+            
+            # QnA entry (if present)
+            if et.qna_gcs_url:
+                qna_entry = {
+                    'id': et.id,
+                    'file_name': et.file_name,
+                    'uploaded_at': et.uploaded_at,
+                    'qna_gcs_url': et.qna_gcs_url,
+                    'type': 'qna'
+                }
+                split_entries.append(qna_entry)
+                if len(split_entries) >= 5:
+                    break
+        
+        # Ensure we only take up to five entries
+        split_entries = split_entries[:5]
+        notes_count = ExtractedText.objects.filter(user=request.user).count()
+        quizzes_count = ExtractedText.objects.filter(user=request.user, quiz_gcs_url__isnull=False).count()
+        qna_count = ExtractedText.objects.filter(user=request.user, qna_gcs_url__isnull=False).count()
+        context = {
+            'page': 'dashboard',
+            'split_entries': split_entries,
+            'notes_count': notes_count,
+            'quizzes_count': quizzes_count,
+            'qna_count': qna_count,
+        }
+    return render(request, "dashboard.html", context)
 
 def redirect_to_register(request):
     email = request.GET.get("email", "")
@@ -34,7 +96,7 @@ def redirect_to_register(request):
 def loginPage(request):
 
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('dashboard')
 
     if request.method == 'POST':
         email = request.POST.get('email').lower()
@@ -51,7 +113,7 @@ def loginPage(request):
         if user:
             login(request, user)
             messages.success(request, "Login Successful|You have successfully logged in! Welcome back!")
-            return redirect('home')
+            return redirect('dashboard')
         else:
             messages.error(request, "Login Error|The email or password you entered is incorrect. Please try again.")
 
@@ -80,7 +142,7 @@ def registerPage(request):
                 # Specify the custom EmailBackend explicitly
                 login(request, user, backend='quiz_app.backends.EmailBackend')
                 messages.success(request, "Registration Complete|Your registration was successful! Welcome to StudyMate!")
-                return redirect('home')
+                return redirect('dashboard')
         else:
             messages.error(request, "Registration Error|An error occurred during registration. Please try again later.")
     else:
@@ -101,7 +163,7 @@ def contact(request):
     context = {'page': 'contact'}
     return render(request, "contact.html", context)
 
-@login_required
+@login_required(login_url='login')
 def profile_view(request):
     user = request.user
     profile, created = UserProfile.objects.get_or_create(user=user)  # Ensure profile exists
@@ -193,8 +255,10 @@ def main(request):
             if extracted_text:
                 if not selected_topics or set(selected_topics) == set(generated_topics):
                     generated_quizzes = generate_quizzes_from_text(extracted_text) or ""
+                    generated_quizzes = convert_quiz_objects_to_json(generated_quizzes) or ""
                 else:
                     generated_quizzes = generate_quizzes_from_topics(extracted_text, selected_topics) or ""
+                    generated_quizzes = convert_quiz_objects_to_json(generated_quizzes) or ""
 
                 if not generated_quizzes:
                     return JsonResponse({"error": "No quiz content generated."}, status=400)
@@ -322,6 +386,7 @@ def delete_uploaded_content(request, text_id):
         return JsonResponse({"success": True})
     return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
 
+
 def send_email(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -330,15 +395,40 @@ def send_email(request):
         terms = request.POST.get('terms')
 
         if terms:
-            send_mail(
-                f'Message from {name}',
-                message,
-                email,
-                ['abubakar.zaidi03@gmail.com'],  # replace with your email
-                fail_silently=False,
+            subject = f"📨 Message from {name}"
+            from_email = 'ma2003110@gmail.com' 
+            to_email = ['abubakar.zaidi03@gmail.com']
+
+            html_content = f"""
+            <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
+                <h2 style="color: #007bff;">New Message from StudyMate</h2>
+                <p style="font-size: 16px;"><strong>Name:</strong> {name}</p>
+                <p style="font-size: 16px;"><strong>Email:</strong> <a href="mailto:{email}">{email}</a></p>
+                <p style="font-size: 16px;"><strong>Message:</strong></p>
+                <div style="border-left: 4px solid #007bff; padding-left: 15px; margin-top: 10px; color: #444;">
+                    {message}
+                </div>
+                <br>
+                <p style="font-size: 12px; color: #aaa;">This message was sent via studymate's contact form.</p>
+            </div>
+            """
+
+            text_content = strip_tags(html_content)
+
+            email_msg = EmailMultiAlternatives(
+                subject=subject,
+                body=text_content,
+                from_email=from_email,
+                to=to_email,
+                reply_to=[email]
             )
-            messages.success(request, "Email Sent|Your email has been sent successfully!")
+            email_msg.attach_alternative(html_content, "text/html")
+            email_msg.send(fail_silently=False)
+
+            messages.success(request, "Email Sent | Your email has been sent successfully!")
             return redirect('home')
+
         else:
-            messages.warning(request, "Terms and Conditions Reminder|Please accept the terms and conditions to proceed.")
+            messages.warning(request, "Terms and Conditions Reminder | Please accept the terms and conditions to proceed.")
+
     return HttpResponse('Failed to send email')
