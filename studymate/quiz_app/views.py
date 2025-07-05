@@ -142,7 +142,7 @@ def registerPage(request):
                 # Specify the custom EmailBackend explicitly
                 login(request, user, backend='quiz_app.backends.EmailBackend')
                 messages.success(request, "Registration Complete|Your registration was successful! Welcome to StudyMate!")
-                return redirect('home')
+                return redirect('dashboard')
         else:
             messages.error(request, "Registration Error|An error occurred during registration. Please try again later.")
     else:
@@ -163,7 +163,7 @@ def contact(request):
     context = {'page': 'contact'}
     return render(request, "contact.html", context)
 
-@login_required
+@login_required(login_url='login')
 def profile_view(request):
     user = request.user
     profile, created = UserProfile.objects.get_or_create(user=user)  # Ensure profile exists
