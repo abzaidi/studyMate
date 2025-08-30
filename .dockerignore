@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Venv & tooling
+venv/
+.env
+.env.*
+.idea/
+.vscode/
+
+# Git
+.git
+.gitignore
+
+# OS
+.DS_Store
+
+# Static/media (generated at runtime)
+staticfiles/
+media/
+documents/
+extracted_texts/
+generated_qna/
+generated_quizzes/
+samples/
+
+
+main.py
+pdf_to_images.py
+qna_creation.py
+quiz_creation.py
+text_cleaning.py
+text_extraction.py
